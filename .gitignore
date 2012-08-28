@@ -3,6 +3,8 @@
 # Object Files
 *.o
 
+# .DS_STORE files
+.DS_Store
 
 ##### IN DRIVER DIRECTORY #####
 
