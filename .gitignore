@@ -1,0 +1,33 @@
+##### IN ALL DIRECTORIES #####
+
+# Object Files
+*.o
+
+
+##### IN DRIVER DIRECTORY #####
+
+# Executable
+./Driver/main 
+
+# Scripts that check results of heaps
+./Driver/CHECKHEAP_*
+
+
+
+##### IN GENERIC_HEAP_TESTER DIRECTOR #####
+
+# Executable
+./GenericHeapTester/main
+
+# Scripts that run queue operations
+./GenericHeaptester/RUNGENERIC_*
+
+
+
+##### Testcases and Multiplication Outputs #####
+
+# Input testcases
+./Testcases/*
+
+# Multiplication Outputs
+./Outputs/*
