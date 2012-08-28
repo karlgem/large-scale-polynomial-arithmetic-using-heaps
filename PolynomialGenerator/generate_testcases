@@ -1,0 +1,9 @@
+#!/bin/sh
+
+./generator -s 0 -o ../Testcases/t_100p_s_0.in -n 100
+./generator -s 0 -o ../Testcases/t_500p_s_0.in -n 500
+./generator -s 0 -o ../Testcases/t_710p_s_0.in -n 710
+./generator -s 0 -o ../Testcases/t_1000p_s_0.in -n 1000
+./generator -s 0 -o ../Testcases/t_1500p_s_0.in -n 1500
+./generator -s 0 -o ../Testcases/t_2100p_s_0.in -n 2100
+./generator -s 0 -o ../Testcases/t_2900p_s_0.in -n 2900
