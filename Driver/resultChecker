@@ -1,0 +1,77 @@
+#!/bin/sh
+
+
+# create test cases
+cd ../PolynomialGenerator/
+g++ PolynomialGenerator.cpp -o generator;
+
+./generator -o t_10p -n 10
+#./generator -o t_100p -n 100
+./generator -o t_200p -n 200
+./generator -o t_300p -n 300
+./generator -o t_500p -n 500
+./generator -o t_600p -n 600
+
+mv t_* ../Testcases
+
+cd ../Driver
+
+# 10 polynomial pairs
+echo 'Testing on 10 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_10p -o ../Outputs/o_10p_binary.out -v 1 
+./main -h binary-chaining -i ../Testcases/t_10p -o ../Outputs/o_10p_binary_chaining.out -v 1 
+./main -h funnel -i ../Testcases/t_10p -o ../Outputs/o_10p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_10p -o ../Outputs/o_10p_funnel_merging.out -v 1
+
+echo '\n\n'
+
+
+# 100 polynomial pairs
+echo 'Testing on 100 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_100p -o ../Outputs/o_100p_binary.out -v 1
+./main -h binary-chaining -i ../Testcases/t_100p -o ../Outputs/o_100p_binary_chaining.out -v 1
+./main -h funnel -i ../Testcases/t_100p -o ../Outputs/o_100p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_100p -o ../Outputs/o_100p_funnel_merging.out -v 1
+
+echo '\n\n'
+
+
+# 200 polynomial pairs
+echo 'Testing on 200 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_200p -o ../Outputs/o_200p_binary.out -v 1
+./main -h binary-chaining -i ../Testcases/t_200p -o ../Outputs/o_200p_binary_chaining.out -v 1
+./main -h funnel -i ../Testcases/t_200p -o ../Outputs/o_200p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_200p -o ../Outputs/o_200p_funnel_merging.out -v 1
+
+echo '\n\n'
+
+
+# 300 polynomial pairs
+echo 'Testing on 300 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_300p -o ../Outputs/o_300p_binary.out -v 1
+./main -h binary-chaining -i ../Testcases/t_300p -o ../Outputs/o_300p_binary_chaining.out -v 1
+./main -h funnel -i ../Testcases/t_300p -o ../Outputs/o_300p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_300p -o ../Outputs/o_300p_funnel_merging.out -v 1
+
+echo '\n\n'
+
+
+# 500 polynomial pairs
+echo 'Testing on 500 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_500p -o ../Outputs/o_500p_binary.out -v 1
+./main -h binary-chaining -i ../Testcases/t_500p -o ../Outputs/o_500p_binary_chaining.out -v 1
+./main -h funnel -i ../Testcases/t_500p -o ../Outputs/o_500p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_500p -o ../Outputs/o_500p_funnel_merging.out -v 1
+
+echo '\n\n'
+
+
+# 600 polynomial pairs
+echo 'Testing on 600 Polynomial Pairs'
+./main -h binary -i ../Testcases/t_600p -o ../Outputs/o_600p_binary.out -v 1
+./main -h binary-chaining -i ../Testcases/t_600p -o ../Outputs/o_600p_binary_chaining.out -v 1
+./main -h funnel -i ../Testcases/t_600p -o ../Outputs/o_600p_funnel.out -v 1
+./main -h funnel-merging -i ../Testcases/t_600p -o ../Outputs/o_600p_funnel_merging.out -v 1
+
+
+
