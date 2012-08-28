@@ -6,6 +6,9 @@
 # .DS_STORE files
 .DS_Store
 
+# .stxxl file
+.stxxl
+
 ##### IN DRIVER DIRECTORY #####
 
 # Executable
