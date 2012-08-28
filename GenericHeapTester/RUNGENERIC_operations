@@ -1,0 +1,108 @@
+#!/bin/sh
+
+make
+
+
+## Tests to find approximate runtime
+echo 'Binary - 5050'
+./main -v 1 -h binary -t 1 -s 5050 -p 338350
+
+echo 'Binary - 63000'
+./main -v 1 -h binary -t 1 -s 63000 -p 10542250
+
+echo 'Binary - 125250'
+./main -v 1 -h binary -t 1 -s 125250 -p 41791750
+
+echo 'Binary - 251000'
+./main -v 1 -h binary -t 1 -s 251000 -p 83834500
+
+echo 'Binary - 500500'
+./main -v 1 -h binary -t 1 -s 500500 -p 333833500
+
+# ./main -v 1 -h binary -t 1 -s 605550 444271850
+# ./main -v 1 -h binary -t 1 -s 720600 576720200
+# ./main -v 1 -h binary -t 1 -s 845650 733178550
+# 
+# Starting from 1400 pairs
+# ./main -v 1 -h binary -t 1 -s 980700 915646900
+# ./main -v 1 -h binary -t 1 -s 1016025 965562425
+# 
+# ./main -v 1 -h binary -t 1 -s 1051975 1017259825
+# ./main -v 1 -h binary -t 1 -s 1088550 1070770350
+
+echo 'Binary - 1125750'
+./main -v 1 -h binary -t 1 -s 1125750 -p 1126125250
+
+echo 'Binary - 2206050'
+./main -v 1 -h binary -t 1 -s 2206050 -p 3089205350
+
+echo 'Binary - 4206450'
+./main -v 1 -h binary -t 1 -s 4206450 -p 8133872150
+
+
+
+
+# TESTING FUNNEL HEAP
+echo 'Funnel - 5050'
+./main -v 1 -h funnel -t 1 -s 5050 -p 338350
+
+echo 'Funnel - 63000'
+./main -v 1 -h funnel -t 1 -s 63000 -p 10542250
+
+echo 'Funnel - 125250'
+./main -v 1 -h funnel -t 1 -s 125250 -p 41791750
+
+echo 'Funnel - 251000'
+./main -v 1 -h funnel -t 1 -s 251000 -p 83834500
+
+echo 'Funnel - 500500'
+./main -v 1 -h funnel -t 1 -s 500500 -p 333833500
+
+echo 'Funnel - 1125750'
+./main -v 1 -h funnel -t 1 -s 1125750 -p 1126125250
+
+echo 'Funnel - 2206050'
+./main -v 1 -h funnel -t 1 -s 2206050 -p 3089205350
+
+echo 'Funnel - 4206450'
+./main -v 1 -h funnel -t 1 -s 4206450 -p 8133872150
+
+
+# ./main -v 1 -h binary -t 1 -s 1163575 1183355775
+# ./main -v 1 -h binary -t 1 -s 1202025 1242493175
+# 
+# # Starting from ---- pairs
+# ./main -v 1 -h binary -t 1 -s 1059240 1027815880
+# ./main -v 1 -h binary -t 1 -s 1066530 1038444710
+# ./main -v 1 -h binary -t 1 -s 1073845 1049146565
+# ./main -v 1 -h binary -t 1 -s 1081185 1059921695
+# ./main -v 1 -h binary -t 1 -s 1095940 1081692780
+# ./main -v 1 -h binary -t 1 -s 1103355 1092689235
+# ./main -v 1 -h binary -t 1 -s 1110795 1103759965
+# ./main -v 1 -h binary -t 1 -s 1118260 1114905220
+# ./main -v 1 -h binary -t 1 -s 1133265 1137420305
+# ./main -v 1 -h binary -t 1 -s 1140805 1148790635
+# ./main -v 1 -h binary -t 1 -s 1148370 1160236490
+# ./main -v 1 -h binary -t 1 -s 1155960 1171758120
+# 
+# ./main -v 1 -h binary -t 1 -s 1171215 1195029705
+# ./main -v 1 -h binary -t 1 -s 1178880 1206780160
+# ./main -v 1 -h binary -t 1 -s 1186570 1218607390
+# ./main -v 1 -h binary -t 1 -s 1194285 1230511645
+#  
+# 
+# 
+# 
+# 
+# ./main -v 1 -h binary -t 1 -s 1280800 1366613600
+# ./main -v 1 -h binary -t 1 -s 1321125  1431659125
+# ./main -v 1 -h binary -t 1 -s 1362075  1498736525
+# ./main -v 1 -h binary -t 1 -s 1403650  1567877050
+# ./main -v 1 -h binary -t 1 -s 1445850  1639111950
+# 
+# ./main -v 1 -h binary -t 1 -s 1480000 1700000000
+# ./main -v 1 -h binary -t 1 -s 1520000 1770000000
+# ./main -v 1 -h binary -t 1 -s 1560000 1840000000
+# ./main -v 1 -h binary -t 1 -s 1600000 1910000000
+# ./main -v 1 -h binary -t 1 -s 1670000 1980000000
+# 
