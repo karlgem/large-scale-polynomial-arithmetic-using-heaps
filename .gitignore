@@ -28,6 +28,10 @@
 ./GenericHeaptester/RUNGENERIC_*
 
 
+##### IN POLYNOMIAL GENERATOR DIRECTORY #####
+
+# Executable
+./PolynomialGenerator/generator
 
 ##### Testcases and Multiplication Outputs #####
 
