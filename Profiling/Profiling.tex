@@ -1,0 +1,562 @@
+\documentclass[11pt, one-sided]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{booktabs}
+\usepackage{pgfmath}
+\usepackage{pgf}
+\usepackage{tabularx,colortbl}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+%\title{Brief Article}
+%\author{The Author}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+%\maketitle
+%\section{}
+%\subsection{}
+
+
+% GENERIC OPERATIONS 
+\bigskip{\bf Generic Operations  \rm}
+
+% GENERIC - BINARY 
+\begin{table}[htbp]
+   \centering
+      \caption{Generic Operations - Binary Heap}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Maximum   	& 	Number of 	& I/O Wait		& Runtime 	 \\ 
+		 Heap Size		&	Inserts	& Time(s)		&	(s)		 		\%		\\ \hline	
+		 			&				&			&						\\
+		 			&				&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% GENERIC - BINARY WITH CHAINING
+\begin{table}[htbp]
+   \centering
+      \caption{Generic Operations - Binary Heap with Chaining}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Maximum   	& 	Number of 	& I/O Wait		& Runtime 	 \\ 
+		 Heap Size		&	Inserts	& Time(s)		&	(s)		 		\%		\\ \hline	
+		 			&				&			&						\\
+		 			&				&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% GENERIC - FUNNEL
+\begin{table}[htbp]
+   \centering
+      \caption{Generic Operations - Funnel Heap}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Maximum   	& 	Number of 	& I/O Wait		& Runtime 	 \\ 
+		 Heap Size		&	Inserts	& Time (s)		&	(s)		 		\%		\\ \hline	
+		 			&				&			&						\\
+		 			&				&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% GENERIC - FUNNEL WITH MERGING
+\begin{table}[htbp]
+   \centering
+      \caption{Generic Operations - Funnel Heap with Merging}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Maximum   	& 	Number of 	& I/O Wait		& Runtime 	 \\ 
+		 Heap Size		&	Inserts	& Time (s)		&	(s)		 		\%		\\ \hline	
+		 			&				&			&						\\
+		 			&				&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\newpage
+
+% POLYNOMIAL MULTIPLICATION ON BINARY HEAP
+\bigskip{\bf Polynomial Multiplication on Binary Heap \rm}
+
+% MULTIPLICATION - BINARY - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - BINARY - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - BINARY - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 100		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\newpage
+
+% POLYNOMIAL MULTIPLICATION ON BINARY HEAP WITH CHAINING
+\bigskip{\bf Polynomial Multiplication on Binary Heap with Chaining \rm}
+
+
+% MULTIPLICATION - BINARY WITH CHAINING - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap with Chaining - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - BINARY WITH CHAINING - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap with Chaining - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - BINARY WITH CHAINING - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Binary Heap with Chaining - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+
+
+
+
+\newpage
+
+% Polynomial Multiplication ON FUNNEL HEAP
+\bigskip{\bf Polynomial Multiplication on Funnel Heap \rm}
+
+% MULTIPLICATION - FUNNEL - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&					\\
+		 		&			&			&			&					\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - FUNNEL - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% MULTIPLICATION - FUNNEL - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+\newpage
+
+% Polynomial Multiplication ON FUNNEL HEAP WITH MERGING
+\bigskip{\bf Polynomial Multiplication on Funnel Heap with Merging\rm}
+
+% MULTIPLICATION - FUNNEL WITH MERGING - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap with Merging - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&					\\
+		 		&			&			&			&					\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION - FUNNEL WITH MERGING - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap with Merging - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% MULTIPLICATION - FUNNEL WITH MERGING - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication - Funnel Heap with Merging - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\newpage
+
+% POLYNOMIAL MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS
+
+
+% POLYNOMIAL MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS ON BINARY HEAP
+\bigskip{\bf Polynomial Multiplication with Optimized Sequence of Inserts on Binary Heap \rm}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\newpage
+
+% POLYNOMIAL MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS ON BINARY HEAP WITH CHAINING
+\bigskip{\bf Polynomial Multiplication with Optimized Sequence of Inserts on Binary Heap with Chaining \rm}
+
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY WITH CHAINING - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap with Chaining - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY WITH CHAINING - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap with Chaining - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - BINARY WITH CHAINING - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Binary Heap with Chaining - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+
+
+
+
+\newpage
+
+% Polynomial Multiplication with Optimized Sequence of Inserts ON FUNNEL HEAP
+\bigskip{\bf Polynomial Multiplication with Optimized Sequence of Inserts on Funnel Heap \rm}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&					\\
+		 		&			&			&			&					\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+\newpage
+
+% Polynomial Multiplication with Optimized Sequence of Inserts ON FUNNEL HEAP WITH MERGING
+\bigskip{\bf Polynomial Multiplication with Optimized Sequence of Inserts on Funnel Heap with Merging\rm}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL WITH MERGING - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap with Merging - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&					\\
+		 		&			&			&			&					\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL WITH MERGING - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap with Merging - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% MULTIPLICATION WITH OPTIMIZED SEQUENCE OF INSERTS - FUNNEL WITH MERGING - 75
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication with Optimized Sequence of Inserts - Funnel Heap with Merging - 75\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 		&			&			&			&						\\
+		 		&			&			&			&						\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+\newpage
+\bigskip{\bf Binary Heap with Packed ID's (BH-PI) VS Binary Heap with External ID Management (BH-EIM) \rm}
+
+% BINARY HEAP WITH PACKED ID's (BH-PI) VERSUS BINARY HEAP WITH EXTERNAL ID MANAGEMENT (BH-EIM)
+\begin{table}[htbp]
+   \centering
+      \caption{Binary Heap with Packed ID's (BH-PI) VS Binary Heap with External ID Management (BH-EIM)}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Maximum 	& Runtime	& Runtime 		 \\ 
+		 of pairs 	&			& Heap Size	& BH-PI (s)	& BH-EIM (s)		\\ \hline
+		 		&			&			&			&				\\
+		 		&			&			&			&				\\
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\newpage
+\bigskip{\bf Polynomial Multiplication Without STXXL using Binary Heap with Chaining on Optimized and Non-Optimized Sequence of Inserts \rm}
+
+% NO STXXL: BHC using Optimized Multiplication VS BHC using Regular Multiplication  - 0% Sparsity
+\begin{table}[htbp]
+   \centering
+      \caption{NO STXXL: BHC using Optimized Multiplication (BHC-OM) VS BHC using Regular Multiplication (BHC-RM) - 0\% Sparsity} 
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|c|c|}
+   	\hline
+		 Number   & Number    & BHC-OM & BHC-RM& BHC-OM & BHC-RM & BHC-OM    & BHC-RM 		 \\ 
+		 of pairs 	& of Chains &Capacity & Capacity & MaxSize & MaxSzie & Runtime (s)& Runtime (s)		\\ \hline
+		 100		& 199 	   & 200	    & 5050	      &	180	      &	199	       &	8	       &	8			\\
+		 250		& 499   	   & 500   	    & 31375     & 468	      & 499	       &       715	       &	 861			\\
+		 500		& 999	   &1000	   &125250     &	955	      &	999         &	      22668        &	26226		\\
+		 710		& 1419	   &1420	   &252405     &	1367	      &	1419	       & 142817          &		170262		\\
+	\hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+\end{document}  

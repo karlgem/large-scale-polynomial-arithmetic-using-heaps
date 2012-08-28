@@ -1,0 +1,135 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{booktabs}
+\usepackage{pgfmath}
+\usepackage{pgf}
+\usepackage{tabularx,colortbl}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+%\title{Brief Article}
+%\author{The Author}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+%\maketitle
+%\section{}
+%\subsection{}
+
+% TABLE: REGULAR HEAP OPERATIONS (small NOI)
+\begin{table}[htbp]
+   \centering
+      \caption{Regular Heap Operations}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|}
+   	\hline
+		Input Size & Binary Heap & Funnel heap 	& Improvement \\ 
+				&	(s)		&	(s)		& 		 \%		\\ \hline
+		65536	&	 1		&	2		&	-100			\\ \hline
+		131072	&	1		&	3		&	-200		\\ \hline
+		262144	&	1		&	8		&	-800		\\ \hline
+		524288	&	2		&	17		&	-750		\\ \hline
+		1048576	&	 4		&	40		&	-900			\\ \hline
+		2097152 	&	10		&	107		&	-970		\\ \hline
+\rowcolor{red!50}		
+		2369296	&	122		&	124		&	-1.64		\\ \hline
+		4194304	&    4852		&	282		&	94.1			\\ \hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% Requires the booktabs if the memoir class is not being used
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication Using Binary and Funnel Heaps}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Max Number & Binary Heap & Funnel heap 	& Improvement \\ 
+		 of pairs 	&			& of Elements	& 	(s)		&	(s)		& 		\%		 		\\ \hline
+		100		&	 100		&	1905		&	0		&	1		&	$\approx$ -100			\\ \cline{2-6}
+				&	 1000	&	1892		&	0		&	1		&	$\approx$ -100			\\ \hline
+		1000		&	 100		&	43770	&	5		&	46		&	-820				\\ \cline{2-6}
+				&	 1000	&	44214	&	5		&	47		&	-840				\\ \hline
+		10000	&	 100		&	497135	&	93		&	754		&	-711				\\ \hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+\vspace{8mm}
+Note1: The \bf Max Number of Elements \rm column in table 2 refers to the maximum number of elements that the heap holds at any one time. This does \bf not \rm refer to the total number of elements that are inserted into the heap throughout the whole process.
+
+\vspace{4mm}
+Note2: In both tables, the \bf Improvement \rm column was calculated as 
+\[
+	\text{Improvement} = \frac{\text{Slower} - \text{Faster}}{\text{Slower}} \times 100
+\]
+
+
+
+\end{document}  
+
+2105344
+2113536
+2129920
+2162688
+2228224
+2309296
+2330000
+2344648
+2351972
+2359296
+2369296
+2375296
+2385296
+2621440
+3145728
+
+
+
+% Requires the booktabs if the memoir class is not being used
+\begin{table}[htbp]
+   \centering
+      \caption{Regular Heap Operations}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|}
+   	\hline
+		Input Size & Binary Heap & Funnel heap 	& Improvement \\ 
+				&	(s)		&	(s)		& 		 \%		\\ \hline
+		65536	&	 1		&	2		&	50			\\ \hline
+		131072	&	1		&	3		&	67			\\ \hline
+		262144	&	1		&	8		&	87.5		\\ \hline
+		524288	&	2		&	17		&	88.2		\\ \hline
+		1048576	&	 4		&	40		&	90			\\ \hline
+		2097152 	&	10		&	107		&	90.7		\\ \hline
+\rowcolor{red!50}		2369296	&	122		&	124		&	1.6		\\ \hline
+		4194304	&    4852		&	282		&	94.1			\\ \hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+% Requires the booktabs if the memoir class is not being used
+\begin{table}[htbp]
+   \centering
+      \caption{Polynomial Multiplication Using Binary and Funnel Heaps}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & 	Degree	& Max Number & Binary Heap & Funnel heap 	& Improvement \\ 
+		 of pairs 	&			& of Elements	& 	(s)		&	(s)		& 		\%		 		\\ \hline
+		100		&	 100		&	1905		&	0		&	1		&	$\approx$ 100			\\ \cline{2-6}
+				&	 1000	&	1892		&	0		&	1		&	$\approx$ 100			\\ \hline
+		1000		&	 100		&	43770	&	5		&	46		&	89.13				\\ \cline{2-6}
+				&	 1000	&	44214	&	5		&	47		&	89.36				\\ \hline
+		10000	&	 100		&	497135	&	93		&	754		&	83.24				\\ \hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
