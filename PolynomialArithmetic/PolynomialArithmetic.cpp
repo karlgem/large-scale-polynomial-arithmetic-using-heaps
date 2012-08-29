@@ -1761,15 +1761,15 @@ void summationOfProducts (std::vector<poly_t> &f_polynomials, std::vector<poly_t
 	if (usingOptimizedSequenceOfInserts()) {
 		OSImultiply(f_polynomials, g_polynomials, result);
 	}
-	else {
+	else {		// if using non-optimized sequence of inserts
 		if (chosenHeap() == FUNNEL_HEAP_WITH_MERGING) {
 			multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == BINARY_HEAP) {
-			multiplyMultiplePairs(f_polynomials, g_polynomials, result);
+			multiplyMultiplePairsNoID(f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == FUNNEL_HEAP) {
-			multiplyMultiplePairs(f_polynomials, g_polynomials, result);
+			multiplyMultiplePairsNoID(f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == BINARY_HEAP_WITH_CHAINING) {
 			multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);

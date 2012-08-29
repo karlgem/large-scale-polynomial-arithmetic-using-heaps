@@ -105,6 +105,9 @@ void BinaryHeapWithChaining::insert(deg_t degree, coef_t coef, ID_t f_id) {
 	if (heapSize == 0) {		// heap is originally empty
 		key = createMonomial(degree, coef, 0);
 		heap[heapSize++] = key;
+		
+		updateStatistics();
+		
 		return;
 	}
 	
@@ -132,6 +135,8 @@ void BinaryHeapWithChaining::insert(deg_t degree, coef_t coef, ID_t f_id) {
 		// the heap by setting the 'present' boolean to true
 		setDegreePresent(keyDegree, true);
 	}
+	
+	updateStatistics();
 }
 
 /*
@@ -480,5 +485,9 @@ size_t BinaryHeapWithChaining::calculateMemorySpaceForChaining() {
 
 
 
-
-
+/**
+ *	Updates the statistics of the heap
+ */
+inline void BinaryHeapWithChaining::updateStatistics() {
+	largestHeapSize = (heapSize > largestHeapSize) ? heapSize : largestHeapSize;		// update largest heap size reached
+}

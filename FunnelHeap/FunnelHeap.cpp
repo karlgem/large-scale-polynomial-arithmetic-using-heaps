@@ -77,6 +77,13 @@ FunnelHeap::FunnelHeap (int numberOfLinks) {  // "numOfLinks" should be derived 
 		
 	// setup the heap
     setupHeap();  
+
+
+	// INITIALIZE HEAP STATISTICS
+	STAT_linkSweeps = new unsigned long long [numOfLinks];
+	for (int i = 0; i < numOfLinks; i++) {
+		STAT_linkSweeps[i] = 0;
+	}
 }
 
 
@@ -189,6 +196,8 @@ void FunnelHeap::insert (deg_t degree, coef_t coef) {
     }
 
     sweep(i);
+
+	updateStatistics(i);		// update statistics that will be used to evaluate performance
 }
 
 
@@ -645,4 +654,19 @@ void FunnelHeap::print() {
 	
 	cout << endl;
 	
+}
+
+
+
+/**
+ *	Updates the statistics of the heap
+ *
+ *	@param sweepIndex the index of the link at to which the sweep operation occurred
+ */
+inline void FunnelHeap::updateStatistics(int sweepIndex) {
+	assert (sweepIndex >= 1 && sweepIndex <= numOfLinks);		// sanity check
+	
+	if (STAT_linkSweeps != NULL) {
+		STAT_linkSweeps[sweepIndex-1]++;		// increment the sweep 
+	}
 }

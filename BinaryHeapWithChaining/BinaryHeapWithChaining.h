@@ -89,6 +89,12 @@ private:
 	bool degreeIsInHeap(deg_t degree);
 	void setDegreePresent(deg_t degree, bool present);
 	
+	/**
+	 *	Updates the statistics of the heap
+	 */
+	inline void updateStatistics();
+	
+	
 public:
 	// functions
 	

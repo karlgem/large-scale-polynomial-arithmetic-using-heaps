@@ -55,6 +55,12 @@ private:
 	 */
 	void heapIncreaseKey(heap_size_t i, monom_t keyDegree);
 	
+	
+	/**
+	 *	Updates the statistics of the heap
+	 */
+	inline void updateStatistics();		
+	
 public:
 	// functions
 	

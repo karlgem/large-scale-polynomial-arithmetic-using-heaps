@@ -140,6 +140,13 @@ FunnelHeapWithMerging::FunnelHeapWithMerging (int numberOfLinks) {  // "numOfLin
 		
 	// setup the heap
     setupHeap();  
+
+
+	// INITIALIZE HEAP STATISTICS
+	STAT_linkSweeps = new unsigned long long [numOfLinks];
+	for (int i = 0; i < numOfLinks; i++) {
+		STAT_linkSweeps[i] = 0;
+	}
 }
 
 
@@ -267,6 +274,8 @@ void FunnelHeapWithMerging::insert (deg_t degree, coef_t coef) {
 	// if (verboseLevel(VERBOSE_HIGH)) cout << "Sweeped successfully" << endl << endl;
 	
 	// print();
+	
+	updateStatistics(i);
 }
 
 
@@ -927,4 +936,19 @@ void FunnelHeapWithMerging::print() {
 	
 	cout << endl;
 	
+}
+
+
+
+/**
+ *	Updates the statistics of the heap
+ *
+ *	@param sweepIndex the index of the link at to which the sweep operation occurred
+ */
+inline void FunnelHeapWithMerging::updateStatistics(int sweepIndex) {
+	assert (sweepIndex >= 1 && sweepIndex <= numOfLinks);		// sanity check
+	
+	if (STAT_linkSweeps != NULL) {
+		STAT_linkSweeps[sweepIndex-1]++;		// increment the sweep 
+	}
 }

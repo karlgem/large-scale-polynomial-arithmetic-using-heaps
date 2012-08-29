@@ -55,6 +55,19 @@ private:
 	
 	void refillBuffer(Buffer* buff, stream_t &stream1, stream_t &stream2, buf_size_t numberOfElements);
 	
+	// HEAP STATISTICS
+	
+	// statistics variables
+	unsigned long long *STAT_linkSweeps;		// array that indicates the number of sweeps that occured at each link
+	
+	
+	/**
+	 *	Updates the statistics of the heap
+	 *
+	 *	@param sweepIndex the index of the link at to which the sweep operation occurred
+	 */
+	inline void updateStatistics(int sweepIndex);
+	
 public:
 	/**
 	 * A constructor that initializes the heap with the specified number of links
@@ -76,6 +89,22 @@ public:
 		}
 		
 		delete links;
+		
+		
+		// print and clear statistics
+		if (STAT_linkSweeps != NULL) {
+			unsigned long long totalNumberOfSweeps = 0;
+			cout << "Heap Statistics:" << endl;
+			for(int i = 1; i <= numOfLinks; i++) {
+				cout << "\tLink " << i << ": " << STAT_linkSweeps[i-1] << " sweeps" << endl;
+				totalNumberOfSweeps += STAT_linkSweeps[i-1];
+			}
+			
+			cout << "\tTotal Number of Sweeps = " << totalNumberOfSweeps << endl;
+			cout << endl;
+			
+			delete STAT_linkSweeps;
+		}
 		
 	}
 	

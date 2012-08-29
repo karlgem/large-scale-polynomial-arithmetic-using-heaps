@@ -26,7 +26,6 @@ heap_size_t parent(heap_size_t i);
 heap_size_t left(heap_size_t i);
 heap_size_t right(heap_size_t i);
 
-
 /*
  * Function Implementation
  */
@@ -98,6 +97,9 @@ void BinaryHeap::insert(deg_t degree, coef_t coef, ID_t f_id) {
 	if (heapSize == 0) {		// heap is originally empty
 		key = createMonomial(degree, coef, f_id);         // pack the elements into a word
 		heap[heapSize++] = key;                            // insert new element into the heap
+		
+		updateStatistics();			// update heap statistics used for performance evaulation
+		
 		return;
 	}
 	
@@ -110,32 +112,13 @@ void BinaryHeap::insert(deg_t degree, coef_t coef, ID_t f_id) {
 	heap[heapSize++] = key;
 	heapIncreaseKey(heapSize-1, keyDegree);
 	
+	updateStatistics();			// update heap statistics used for performance evaulation
 	
 }
 
 
 void BinaryHeap::insert (deg_t degree, coef_t coef) {
-	if (heapSize == heapCapacity) {
-		printWarning("Heap is full, can't insert element");
-       	return;
-    }
-	
-	monom_t key;
-	
-	if (heapSize == 0) {		// heap is originally empty
-		key = createMonomial(degree, coef, 0);         // pack the elements into a word
-		heap[heapSize++] = key;                            // insert new element into the heap
-		return;
-	}
-	
-	
-	deg_t keyDegree = degree;		// get current degree
-	
-	// create a 0 degree poly
-	key = createMonomial(0, coef, 0);
-	
-	heap[heapSize++] = key;
-	heapIncreaseKey(heapSize-1, keyDegree);
+	insert (degree, coef, 0);			// insert an element into the heap with ID=0
 }
 
 /*
@@ -240,4 +223,13 @@ bool BinaryHeap::isEmpty() {
 
 heap_size_t BinaryHeap::size() {
 	return heapSize;
+}
+
+
+
+/**
+ *	Updates the statistics of the heap
+ */
+inline void BinaryHeap::updateStatistics() {
+	largestHeapSize = (heapSize > largestHeapSize) ? heapSize : largestHeapSize;		// update largest heap size reached
 }
