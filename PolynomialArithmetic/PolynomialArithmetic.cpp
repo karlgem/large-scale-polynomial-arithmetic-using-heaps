@@ -1482,7 +1482,7 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 	deg_t largestDegree = 0;
 	deg_t possibleLargestDegree = 0;
 	for (size_t i = 0; i < numOfPairs; i++) {
-		possibleLargestDegree = GET_DEGREE((f_polynomials[i])[0]) * GET_DEGREE((g_polynomials[i])[0]);
+		possibleLargestDegree = GET_DEGREE((f_polynomials[i])[0]) + GET_DEGREE((g_polynomials[i])[0]);
 		if (largestDegree < possibleLargestDegree) {
 			largestDegree = possibleLargestDegree;
 		}
@@ -1497,7 +1497,7 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 	// create an array of vectors that would hold a mapping of a monomial inserted
 	// into the heap to the actual f and g monomials whose product is that monomial
 //stack<unsigned long> ID_Monom_pair [largestDegree];
-	vector<unsigned long> ID_Monom_pair [largestDegree];
+	vector<unsigned long> ID_Monom_pair [largestDegree+1];
 	
 
 	if (verboseLevel(VERBOSE_MED)) cout << "ID-monomial product mapping array allocated" << endl;
@@ -1533,6 +1533,7 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 //			stack<unsigned long> rel = ID_Monom_pair[degree];
 			vector<unsigned long> *rel = &ID_Monom_pair[degree];
 			
+			assert (rel != NULL);		// sanity check
 			//rel.push(id);
 			rel->push_back(id);
 			
