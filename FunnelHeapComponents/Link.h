@@ -44,8 +44,8 @@ public:
 	
 	~Link () {
 		delete A;
+		delete merger;			// NOTE: the merger does NOT delete the B-buffer, but it DOES make use of it (so delete B after it)
 		delete B;
-		delete merger;
 		delete S;
 	}
 	
