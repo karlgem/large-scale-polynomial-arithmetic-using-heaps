@@ -78,3 +78,19 @@ buf_size_t getS(int linkIndex) {
 }
 
 
+void Link::checkInvariant() {
+	if (A->isExhausted())
+		return;
+		
+	A->checkInvariant();
+	B->checkInvariant();
+	
+	merger->checkInvariant();
+	
+	
+	// check invariants of leafs
+	for (long i = 0; i < getK(index); i++) {
+		S[i]->checkInvariant();
+	}
+	
+}

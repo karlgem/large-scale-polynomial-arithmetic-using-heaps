@@ -60,6 +60,8 @@ public:
 	 *	Prints the KMerger
 	 */
 	void print();
+	
+	void checkInvariant();
 };
 
 

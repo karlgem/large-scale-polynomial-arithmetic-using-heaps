@@ -78,6 +78,8 @@ using namespace std;
 inline void appendBufferToStream(Buffer* buff, stream_t &stream);
 inline monom_t pop (stream_t& stream1, stream_t& stream2, buf_size_t &numOfElementsMerged);
 inline monom_t top (stream_t& stream1, stream_t& stream2);
+inline bool empty(stream_t& stream1, stream_t& stream2);
+inline void checkStream(stream_t &stream);
 void checkBufferInvariant(Buffer* b);
 void printStream(stream_t &stream);
 #define LINK_OVERHEAD (int) 0       // number of elements in beginning of a link or
@@ -206,7 +208,7 @@ void FunnelHeapWithMerging::insert (deg_t degree, coef_t coef) {
      */
 	
 	bool merged = false;		// indicates if element was merged in I (ie dont increase size)
-	
+
     // insert new element in I
 	I->insertSortedWithMerging(createMonomial(degree, coef, 0), merged);
 	
@@ -214,12 +216,12 @@ void FunnelHeapWithMerging::insert (deg_t degree, coef_t coef) {
 	
 	if (!merged) _size++;
     
+	
     // if I is full, then return. Otherwise, move on to the sweeping
     if (!I->isFull()) {
         return;
     }
 
-	// cout << "I-Size = " << I->getSize() << ", I-Cap = " << I->getCapacity() << endl;
     
     // locate empty leaf to sweep to
     
@@ -243,18 +245,9 @@ void FunnelHeapWithMerging::insert (deg_t degree, coef_t coef) {
     while (true) {
         c_i = link_i->c;
         
-//		long k_i = constantK[i-1];
 		long k_i = getK(i);
         
         if (c_i <= k_i) {      // then we found the first empty buffer
-			// if (i == 6 && c_i == k_i) {
-			// 	cout << "Filling last leaf of link " << i << endl;
-			// 	pausePrompt();
-			// }
-			// if (i == 6) {
-			// 	print();
-			// 	pausePrompt();
-			// }
             break;
         }
     
@@ -269,20 +262,28 @@ void FunnelHeapWithMerging::insert (deg_t degree, coef_t coef) {
 		i++;
     }
 
-	// if (verboseLevel(VERBOSE_HIGH)) cout << "Sweeping to link " << i << "..." << endl;
+	// cout << "Sweeping to link " << i << "..." << endl;
+	// print();
+	// pausePrompt();
     sweep(i);
 	// if (verboseLevel(VERBOSE_HIGH)) cout << "Sweeped successfully" << endl << endl;
 	
 	// print();
 	
 	updateStatistics(i);
+	
+	// cout << "1" << endl;
+	// if (lamp == 34155) checkInvariant();
+	// cout << "2" << endl << endl;
 }
 
 
-
+size_t lamp = 0;
 
 monom_t FunnelHeapWithMerging::poll () {
 	assert(_size > 0);			// sanity check
+	
+	++lamp;
 	
 	buf_size_t numberOfElementsRemoved = 0;
 	monom_t elem = pollInternal(numberOfElementsRemoved);  
@@ -327,8 +328,6 @@ void FunnelHeapWithMerging::setupHeap () {
     for (int i = 0; i < numOfLinks; i++) {
 		linkIndex = i+1;
 		
-		// if (linkIndex == 6)
-		// 	setGlobalBoolean(true);
 			
 		links[i] = new Link (mem, linkIndex);
 		
@@ -442,6 +441,130 @@ unsigned long long computeLinkRequiredStorage(int i) {
 #pragma mark Sweep, Fill...
 
 
+/**
+ *	Forms the first stream of the sweep method; this involves extracting elements from the
+ *	link we're "sweeping" to, starting from the A-buffer on a path down to the parent of the
+ *	leaf we're sweeping to.
+ *
+ *	@param stream the stream to be filled
+ */
+void FunnelHeapWithMerging::formStream1 (stream_t &stream1, int linkIndex, vector<buf_size_t> &stream1BufferSizes) {
+	// if (verboseLevel(VERBOSE_HIGH)) cout << "Forming stream 1" << endl;
+	Link* link_sweep = getLink(linkIndex);
+	
+	// start with A_sweep
+	Buffer* currBuff = link_sweep->A;		// point to A_sweep
+	stream1BufferSizes.push_back(currBuff->getSize());
+
+	// append elements to stream1
+	appendBufferToStream(currBuff, stream1);
+
+	// move on to B_sweep
+	currBuff = currBuff->getLeftChild();		// point to B_sweep
+	
+	// traverse the path from B_sweep to S_ci, appending the buffers to stream1 and recording their sizes.
+	int currC = link_sweep->c;
+	long currK = getK(linkIndex);
+	
+	// loop until we reach S_ci
+    while (currBuff->getType() != LEAF_BUF_T) {
+		stream1BufferSizes.push_back(currBuff->getSize());
+		appendBufferToStream(currBuff, stream1);
+		step(currBuff, currC, currK);
+	}
+	
+}
+
+
+/**
+ *	Forms the second stream of the sweep method; this performs an internal extraction (i.e. does 
+ *	not affect the size parameter of the heap). Having already marked A_sweep as exhausted, this 
+ *	extraction will move all elements in the links before link_sweep to stream2.
+ */
+void FunnelHeapWithMerging::formStream2 (stream_t &stream2) {
+	// if (verboseLevel(VERBOSE_HIGH)) cout << "Forming stream 2" << endl;
+    // Forming stream2: 	
+	
+	buf_size_t numOfElementsRemoved = 0;		// indicates the number of elements removed during a pollInternal call
+	
+	// while I is not empty, or A_1 is not exhausted
+	while (!(I->isEmpty() && getLink(1)->A->isExhausted())) {
+		stream2.push(pollInternal(numOfElementsRemoved));
+	}
+	
+}
+
+
+void FunnelHeapWithMerging::reinsertStreams(stream_t &stream1, stream_t &stream2, int sweepIndex, vector<buf_size_t> &ASizes, vector<buf_size_t> &stream1BufferSizes) {
+	// if (verboseLevel(VERBOSE_HIGH)) cout << "Re-inserting elements" << endl;
+	// Re-inserting elements: Conceptually, the two streams should be merged, and then reinserted into the heap.
+	// But for performance, the streams will not be merged together into a thrid stream, rather they will act 
+	// together as one virtual stream, meanining that when we need an element from this virtual (third) stream, 
+	// we take the maximum element of the two streams.
+	// The insertion involves inserting elements into the A-buffers of the links before link_sweep, preserving
+	// the sizes they had before this sweep operation. Then, the remaining elements are stored in the path
+	// from A_sweep to S_ci (also preserving previous sizes), and the elements that remain are stored in S_ci
+	//
+	// NOTE: The whole duplicate-merging process (i.e. merging together elements of equal degrees while in the heap)
+	// may cause a break in the heap invariant if not dealt with cautiously. Specifically, merging duplicates might
+	// place "lower-ranked" elements in buffers in which they do not belong. This is because we have previously 
+	// recorded the sizes of the buffers before the sweep method, and are refilling these buffers with that same 
+	// amount of elements. In particular, this can happen when dealing with buffers that are in the link to which
+	// we are sweeping to. To solve this, the method responsible for refilling the buffers with elements after
+	// they have been removed (i.e. the refillBuffer method) will perform a check to make sure its not adding
+	// an element to the buffer that is smaller than the largest element in one of its children. If it does reach
+	// such a case, it will stop filling that buffer, and will move on to the next one
+	
+	Link* currLink;
+	
+	// start by filling the A-buffers of the links before link_sweep
+	for (int i = 1; i < sweepIndex; i++) {
+		if (empty(stream1, stream2)) 
+			return;
+		
+		currLink = getLink(i);
+		refillBuffer(currLink->A, stream1, stream2, ASizes[i-1]);
+		currLink->A->setExhausted(false);			// set not exhausted
+	}
+
+	Link* link_sweep = getLink(sweepIndex);
+
+	if (empty(stream1, stream2)) 
+		return;
+		
+	// fill A_sweep
+	refillBuffer(link_sweep->A, stream1, stream2, stream1BufferSizes[0]);
+	link_sweep->A->setExhausted(false);
+
+	Buffer* currBuff;
+	int currC;
+	long currK;
+	
+	// fill the path from B_sweep to S_ci
+	currBuff = link_sweep->A->getLeftChild();		// points to B_sweep
+	currC = link_sweep->c;
+	currK = getK(sweepIndex);
+
+	for (size_t i = 1; i < stream1BufferSizes.size(); i++) {
+		if (empty(stream1, stream2)) 
+			return;
+			
+		refillBuffer(currBuff, stream1, stream2, stream1BufferSizes[i]);
+		currBuff->setExhausted(false);
+		
+		step(currBuff, currC, currK);
+	}
+
+
+	if (empty(stream1, stream2)) 
+		return;
+		
+	// // fill the leaf with the remaining elements
+	refillBuffer(currBuff, stream1, stream2, stream1.size() + stream2.size());
+	currBuff->setExhausted(false);
+
+}
+
 
 /*
  *  sweep: used to empty buffer I and make room for new elements to be inserted
@@ -477,129 +600,46 @@ void FunnelHeapWithMerging::sweep (int linkIndex) {
      *  
      *
      */
-
-
 	assert (linkIndex >= 1 && linkIndex <= numOfLinks);		// sanity check
 	
-   	// store all sizes of the A-buffers of all links up to (BUT EXCLUDING) A_sweep
-	buf_size_t ASizes [linkIndex-1];
-	Link* currLink;
-	for (int i = 0; i < linkIndex-1; i++) {
-		currLink = getLink(i+1);
-		ASizes[i] = currLink->A->getSize();
-	}
-	
-	
-	// if (verboseLevel(VERBOSE_HIGH)) cout << "Forming stream 1" << endl;
-    // store all sizes of path from A_sweep to S_ci (in which case S_ci is the S buffer being sweeped to)
+	// form stream 1
 	stream_t stream1;
- 	Link* link_sweep = getLink(linkIndex);
+	vector<buf_size_t> stream1BufferSizes;
+	
+	formStream1(stream1, linkIndex, stream1BufferSizes);
 
-
-	vector<buf_size_t> stream1BufferSizes;		// includes A_sweep
-	
-	// start with A_sweep
-	Buffer* currBuff = link_sweep->A;		// point to A_sweep
-	stream1BufferSizes.push_back(currBuff->getSize());
-
-	// append elements to stream1
-	appendBufferToStream(currBuff, stream1);
-
-	// move on to B_sweep
-	currBuff = currBuff->getLeftChild();		// point to B_sweep
-	
-	// traverse the path from B_sweep to S_ci, appending the buffers to stream1 and recording their sizes.
-	int currC = link_sweep->c;
-//	long currK = constantK[linkIndex-1];
-	long currK = getK(linkIndex);
-	
-	// loop until we reach S_ci
-    while (currBuff->getType() != LEAF_BUF_T) {
-		stream1BufferSizes.push_back(currBuff->getSize());
-		appendBufferToStream(currBuff, stream1);
-		step(currBuff, currC, currK);
-	}
-	
-	
-	// set A_sweep as exhausted (possibly break invariant temporarily, intentionally);
-	link_sweep->A->setExhausted(true);
-
-    // STATE: stream1 contains all elements in path  A_sweep to S_ci
-    
-    // if (verboseLevel(VERBOSE_HIGH)) cout << "Forming stream 2" << endl;
-    // Forming stream2: Perform an internal extraction (i.e. does not affect the size parameter of the heap).
-	// Having already marked A_sweep as exhausted, this extraction will move all elements in the links
-	// before link_sweep to stream2.
-	stream_t stream2;
-	
-	buf_size_t numOfElementsRemoved = 0;		// indicates the number of elements removed during a pollInternal call
-	
-	// while I is not empty, or A_1 is not exhausted
-	while (!(I->isEmpty() && getLink(1)->A->isExhausted())) {
-		stream2.push(pollInternal(numOfElementsRemoved));
-	}
-	
-	
-	
-	// if (verboseLevel(VERBOSE_HIGH)) cout << "Re-inserting elements" << endl;
-	// Re-inserting elements: Conceptually, the two streams should be merged, and then reinserted into the heap.
-	// But for performance, the streams will not be merged together into a thrid stream, rather they will act 
-	// together as one virtual stream, meanining that when we need an element from this virtual (third) stream, 
-	// we take the maximum element of the two streams.
-	// The insertion involves inserting elements into the A-buffers of the links before link_sweep, preserving
-	// the sizes they had before this sweep operation. Then, the remaining elements are stored in the path
-	// from A_sweep to S_ci (also preserving previous sizes), and the elements that remain are stored in S_ci
-	//
-	// NOTE: The whole duplicate-merging process (i.e. merging together elements of equal degrees while in the heap)
-	// may cause a break in the heap invariant if not dealt with cautiously. Specifically, merging duplicates might
-	// place "lower-ranked" elements in buffers in which they do not belong. This is because we have previously 
-	// recorded the sizes of the buffers before the sweep method, and are refilling these buffers with that same 
-	// amount of elements. In particular, this can happen when dealing with buffers that are in the link to which
-	// we are sweeping to. To solve this, the method responsible for refilling the buffers with elements after
-	// they have been removed (i.e. the refillBuffer method) will perform a check to make sure its not adding
-	// an element to the buffer that is smaller than the largest element in one of its children. If it does reach
-	// such a case, it will stop filling that buffer, and will move on to the next one
-	
-		
-	// start by filling the A-buffers of the links before link_sweep
-	for (int i = 1; i < linkIndex; i++) {
+	// store all sizes of the A-buffers of all links up to (BUT EXCLUDING) A_sweep
+	vector<buf_size_t> ASizes;
+	Link* currLink;
+	for (int i = 1; i <= linkIndex-1; i++) {
 		currLink = getLink(i);
-		refillBuffer(currLink->A, stream1, stream2, ASizes[i-1]);
-		currLink->A->setExhausted(false);			// set not exhausted
+		ASizes.push_back(currLink->A->getSize());
 	}
-	
-	// fill A_sweep
-	refillBuffer(link_sweep->A, stream1, stream2, stream1BufferSizes[0]);
-	
-	link_sweep->A->setExhausted(false);		// reset A_sweep to not be exhausted
-	
-	// fill the path from B_sweep to S_ci
-	currBuff = link_sweep->A->getLeftChild();		// points to B_sweep
-	currC = link_sweep->c;
-//	currK = constantK[linkIndex-1];
-	currK = getK(linkIndex);
-	
-	for (size_t i = 1; i < stream1BufferSizes.size(); i++) {
-		refillBuffer(currBuff, stream1, stream2, stream1BufferSizes[i]);
-		currBuff->setExhausted(false);			// set not exhausted
-		step(currBuff, currC, currK);
-	}
-	
 
-	// // fill the leaf with the remaining elements
-	refillBuffer(currBuff, stream1, stream2, stream1.size() + stream2.size());
-	currBuff->setExhausted(false);			// set not exhausted
-        
+	Link* link_sweep = getLink(linkIndex);
+    // set A_sweep as exhausted (possibly break invariant temporarily, intentionally);
+	bool A_exhausted = link_sweep->A->isExhausted();
+	link_sweep->A->setExhausted(true);
+	
+	// form stream 2
+	stream_t stream2;
+	formStream2(stream2);
+	
+	link_sweep->A->setExhausted(A_exhausted);		// set the exhausted value of A_sweep back to what it was
+	
+	
+	// reinsert the two streams back into the heap
+	reinsertStreams(stream1, stream2, linkIndex, ASizes, stream1BufferSizes);
+	
     // reset c_i and r_i (for i < linkindex) to 1
     for (int i = 1; i <= linkIndex-1; i++) {
 		currLink = getLink(i);
 		currLink->c = 1;
     }
     
-    
     // increment c_i (for i = linkIndex) by 1
 	link_sweep->c = link_sweep->c + 1;
-
+	
 }
 
 
@@ -732,9 +772,12 @@ inline void appendBufferToStream(Buffer* buff, stream_t &stream) {
 	}
 }
 
-void FunnelHeapWithMerging::refillBuffer(Buffer* buff, stream_t &stream1, stream_t &stream2, buf_size_t numberOfElements) {
+unsigned long long counter = 0;
+
+void FunnelHeapWithMerging::refillBuffer (Buffer* buff, stream_t &stream1, stream_t &stream2, buf_size_t numberOfElements) {
 	// make sure the buffer can fit <numberOfElements> and the stream has enough elements
 	assert(numberOfElements <= buff->getCapacity());
+	assert(buff->isEmpty());
 	
 	// NOTE: due to the fact that we are merging elements of equal degrees while in the heap, it is possible
 	// that the <numberOfElements> to be inserted into the current buffer will be greater than the actual 
@@ -744,7 +787,7 @@ void FunnelHeapWithMerging::refillBuffer(Buffer* buff, stream_t &stream1, stream
 	// in the current buffer whose degree is smaller than the degree of the largest element in one of its children.
 	// We therefore stop inserting elements at that point as well
 	
-	
+	buff->checkInvariant();
 	
 	buf_size_t numOfElementsMerged = 0;
 	buf_size_t tempMerged = 0;
@@ -756,14 +799,13 @@ void FunnelHeapWithMerging::refillBuffer(Buffer* buff, stream_t &stream1, stream
 		Buffer* left = buff->getLeftChild();
 		Buffer* right = buff->getRightChild();
 		
-		
-		if (left != NULL && !left->isEmpty()) {
-			if (elemDegree < GET_DEGREE(left->front())) {
+		if (left != NULL && !left->isExhausted()) {
+			if (elemDegree < GET_DEGREE(getLargestElementInChild(left))) {
 				break;
 			}
 		}
-		if (right != NULL && !right->isEmpty()) {
-			if (elemDegree < GET_DEGREE(right->front())) {
+		if (right != NULL && !right->isExhausted()) {
+			if (elemDegree < GET_DEGREE(getLargestElementInChild(right))) {
 				break;
 			}
 		}
@@ -772,14 +814,16 @@ void FunnelHeapWithMerging::refillBuffer(Buffer* buff, stream_t &stream1, stream
 		assert (GET_DEGREE(popped) == elemDegree);
 		buff->push_back(popped);		
 		numOfElementsMerged += tempMerged;
+		
 	}
 	
 
 	_size -= numOfElementsMerged;
 
+	buff->checkInvariant();
 }
 
-unsigned long long counter = 0;
+
 
 monom_t FunnelHeapWithMerging::pollInternal(buf_size_t &numOfElementsRemoved) {
 	Buffer* A_1 = I->getLeftChild();
@@ -788,7 +832,6 @@ monom_t FunnelHeapWithMerging::pollInternal(buf_size_t &numOfElementsRemoved) {
         A_1->fill();
 	}
 
-	checkBufferInvariant(A_1);
 	bool I_empty = I->isEmpty();
 	bool A_1_empty = A_1->isEmpty();;
 
@@ -797,8 +840,7 @@ monom_t FunnelHeapWithMerging::pollInternal(buf_size_t &numOfElementsRemoved) {
         return 0;
     }
 
-	// indicate the number of elements that are removed
-	// from the heap
+	// indicate the number of elements that are removed from the heap
 	numOfElementsRemoved = 0;
 
 	monom_t popped = 0;
@@ -806,8 +848,6 @@ monom_t FunnelHeapWithMerging::pollInternal(buf_size_t &numOfElementsRemoved) {
     if (!I_empty && !A_1_empty) {
 		// if I and A_1 contain the max, merge the elements together
 		if (GET_DEGREE(I->front()) == GET_DEGREE(A_1->front())) {
-
-
 			// extract the top elements that have the same key in A_1 as I
 
 			// first start by extracting the first element from A_1 and I
@@ -884,6 +924,7 @@ void checkBufferInvariant(Buffer* b) {
 		
 	Buffer *left = b->getLeftChild();
 	Buffer *right = b->getRightChild();
+	Buffer *parent = b->getParent();
 	
 	// check left child
 	if (left != NULL) {
@@ -898,21 +939,15 @@ void checkBufferInvariant(Buffer* b) {
 		}
 	}
 	
+	// check parent
+	if (parent != NULL) {
+		if (!parent->isEmpty() && parent->getType() != I_BUF_T) {
+			assert (GET_DEGREE(b->front()) <= GET_DEGREE(parent->back()));
+		}
+	}
+	
 }
 
-void printStream(stream_t &stream) {
-	return;
-	// cout << "Stream (size = " << stream.size() << "): [";
-	// 
-	// for (size_t i = 0; i < stream.size(); i++) {
-	// 	if (i > 0) {
-	// 		cout << " ";
-	// 	}
-	// 	
-	// 	cout << stream[i] << " ";
-	// }
-	// cout << "]" << endl;
-}
 
 
 // PRINTING THE HEAP
@@ -926,7 +961,7 @@ void FunnelHeapWithMerging::print() {
 		
 		// if the link is exhausted, stop here
 		if (currLink->A->isExhausted())
-				break;
+			break;
 		
 		// otherwise, print the link
 		cout << "Link " << i << ": " << endl;
@@ -952,3 +987,50 @@ inline void FunnelHeapWithMerging::updateStatistics(int sweepIndex) {
 		STAT_linkSweeps[sweepIndex-1]++;		// increment the sweep 
 	}
 }
+
+
+
+
+
+
+void FunnelHeapWithMerging::checkInvariant() {
+	for (int i = 1; i <= numOfLinks; i++) {
+		getLink(i)->checkInvariant();
+	}
+}
+
+
+
+inline void checkStream(stream_t &stream) {
+	if (stream.empty())
+		return;
+		
+	stream_t s (stream);
+
+	monom_t elem1 = s.front();
+	s.pop();
+	while (!s.empty()) {
+		assert (GET_DEGREE(elem1) >= GET_DEGREE(s.front()));
+		elem1 = s.front();
+		s.pop();
+	}
+}
+
+
+
+inline void printStream(stream_t &stream) {
+	stream_t s (stream);
+	cout << "Stream (size = " << s.size() << "): [";
+	
+	size_t limit = s.size();
+	for (size_t i = 0; i < limit; i++) {
+		if (i > 0) {
+			cout << " ";
+		}
+		
+		cout << GET_DEGREE(s.front()) << " ";
+		s.pop();
+	}
+	cout << "]" << endl;
+}
+

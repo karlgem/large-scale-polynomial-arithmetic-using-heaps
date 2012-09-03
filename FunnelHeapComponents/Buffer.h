@@ -237,6 +237,12 @@ public:
 	 *	Print the elements in the buffer
 	 */
 	void print();
+	
+	
+	void checkInvariant();
 };
+
+
+monom_t getLargestElementInChild(Buffer* b);
 
 #endif

@@ -58,6 +58,9 @@ public:
 	 *	Prints the link
 	 */
 	void print();
+	
+	
+	void checkInvariant();
 };
 
 

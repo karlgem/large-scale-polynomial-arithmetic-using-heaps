@@ -48,7 +48,10 @@ private:
 	void setupHeap();
 	
 	Link* getLink(int linkIndex);
-	
+
+	void formStream1 (stream_t &stream1, int linkIndex, vector<buf_size_t> &stream1BufferSizes);
+	void formStream2 (stream_t &stream2);
+	void reinsertStreams(stream_t &stream1, stream_t &stream2, int sweepIndex, vector<buf_size_t> &ASizes, vector<buf_size_t> &stream1BufferSizes);
 	void sweep (int linkIndex);
 	
 	monom_t pollInternal(buf_size_t &numOfElementsRemoved);
@@ -151,6 +154,9 @@ public:
 	 *	Prints the heap
 	 */
 	virtual void print();
+	
+	
+	void checkInvariant();
 };
 
 #endif

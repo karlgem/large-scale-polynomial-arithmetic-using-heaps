@@ -4,8 +4,6 @@
 #include <iostream>
 using namespace std;
 
-void checkInvariant(Buffer* b);
-
 /* Private Methods */
 	
 /*
@@ -126,13 +124,14 @@ int Buffer::getBufferType() {
 	return _bufferType;
 }
 	
+	
 /**
  *	Inserts an element to the end of the buffer
  *	
  *	@param element inserted element
  */
 void Buffer::push_back(monom_t element) {
-//	assert(!isFull());		// sanity check
+	assert(!isFull());		// sanity check
 	if (isFull()) {
 		cout << _bufferType << " full " << endl;
 		pausePrompt();
@@ -155,6 +154,7 @@ void Buffer::push_back(monom_t element) {
 	// the buffer is not exhausted
 	_exhausted = false;
 	
+//	checkInvariant();
 }
 
 /**
@@ -163,7 +163,7 @@ void Buffer::push_back(monom_t element) {
  *	@return the first element
  */
 monom_t Buffer::pop_front() {
-//	assert(!isEmpty());		// sanity check
+	assert(!isEmpty());		// sanity check
 	monom_t popped = *_front;		// get the first element
 	decrement(_front);		// move the front pointer one step to the back to "delete" the front element
 	_size--;					// decrement the size by 1
@@ -185,6 +185,8 @@ monom_t Buffer::pop_front() {
 			}
 		}
 	}
+	
+//	checkInvariant();
 	
 	return popped;
 }
@@ -284,6 +286,8 @@ void Buffer::insertSortedWithMerging (monom_t element, bool &merged) {
 		return;
 	}
 	
+	// cout << "Degree = " << GET_DEGREE(element) << " --> "; print();
+	
 	mem_t pos = _front;
 	
 	buf_size_t counter = 0;
@@ -296,7 +300,11 @@ void Buffer::insertSortedWithMerging (monom_t element, bool &merged) {
 	// loop over all elements to find correct place for new element
 	while (counter < _size) {
 		// if the degree of the element exists, merge the two
-		if (elemDegree == GET_DEGREE(*pos)) {
+		deg_t tempDegree = GET_DEGREE(*pos);
+		// cout << "elemDegree = " << elemDegree << "\ttempDegree = " << tempDegree << endl;
+		
+		if ((deg_t)elemDegree == (deg_t)tempDegree) {
+			// cout << "YES" << endl;
 			setCoef(*pos, GET_COEF(*pos) + elemCoef);	// add coefs
 			merged = true;
 			return;
@@ -459,14 +467,13 @@ void Buffer::fill () {
 
     
     // assertions
-    // if (ASSERTIONS) {
-    //     // 1) if buffer is empty and its children are exhausted, then buffer is also exhausted
-    //     assert(!(isEmpty() && _leftChild->isExhausted() && _rightChild->isExhausted() && !isExhausted()));
-    //     
-    //     // 2) if a child is a leaf and empty, then it is exhausted
-    //     assert(!(_leftChild->isLeaf() && _leftChild->isBufferEmpty() && !_leftChild->isExhausted()));
-    //     assert(!(_rightChild-?isLeaf() && _rightChild->isBufferEmpty() && !_rightChild->isExhausted()));
-    // }
+        // // 1) if buffer is empty and its children are exhausted, then buffer is also exhausted
+        // assert(!(isEmpty() && _leftChild->isExhausted() && _rightChild->isExhausted() && !isExhausted()));
+        // 
+        // // 2) if a child is a leaf and empty, then it is exhausted
+        // assert(!(_leftChild->isLeaf() && _leftChild->isBufferEmpty() && !_leftChild->isExhausted()));
+        // assert(!(_rightChild-?isLeaf() && _rightChild->isBufferEmpty() && !_rightChild->isExhausted()));
+ 
     
 }
 
@@ -480,15 +487,22 @@ void Buffer::fill () {
 void Buffer::mergeStep () {
     // EFFECTS: if a buffer becomes empty as a result of this function, then it is marked
     //          as exahusted
-    
-	checkInvariant(this);
+	checkInvariant();
 	if (_leftChild == NULL && _rightChild == NULL)
 		return;
 		
-    if (_leftChild->isEmpty()) {
+	// if the left child is empty but it is NOT exhausted, fill it
+	if(_leftChild->isEmpty() && !_leftChild->isExhausted())
+		_leftChild->fill();
+		
+	// if the left child is empty but it is NOT exhausted, fill it
+	if(_rightChild != NULL && _rightChild->isEmpty() && !_rightChild->isExhausted())
+		_rightChild->fill();
+		
+    if (_leftChild->isExhausted()) {
 		if (_rightChild == NULL)
 			return;	
-		else if(_rightChild->isEmpty())
+		else if(_rightChild->isExhausted())
         	return;
     }
 	
@@ -505,14 +519,14 @@ void Buffer::mergeStep () {
 	bool rightValid = false;
 	
 	// get (peek) max from non empty buffers
-	if (_leftChild != NULL && !_leftChild->isEmpty()) {
+	if (_leftChild != NULL && !_leftChild->isExhausted()) {
 		leftMaxDegree = GET_DEGREE(_leftChild->front());
 		leftValid = true;
 	}
 	
 	
 	if (_rightChild != NULL) {
-		if (!_rightChild->isEmpty()) {
+		if (!_rightChild->isExhausted()) {
 			rightMaxDegree = GET_DEGREE(_rightChild->front());
 			rightValid = true;
 		}
@@ -544,8 +558,6 @@ void Buffer::mergeStep () {
 		chosenBuffer = _rightChild;
 	}
 	
-	if (chosenBuffer == NULL) 
-		cout << "Chosen buffer = NULL" << endl;
 		
 	assert (chosenBuffer != NULL);		// sanity check
 	
@@ -564,8 +576,7 @@ void Buffer::mergeStep () {
 		// INSERT CODE HERE
 	}
 	
-
-	checkInvariant(this);
+	checkInvariant();
 }
 
 
@@ -583,7 +594,7 @@ void Buffer::print() {
 	else if (_bufferType == LEAF_BUF_T)
 		cout << "LEAF ";
 		
-	cout << "Size = " << _size << "/" << _capacity << ": [";
+	cout << "Ex = " << _exhausted << " Size = " << _size << "/" << _capacity << ": [";
 	
 	mem_t pos = _front;
 	
@@ -604,31 +615,77 @@ void Buffer::print() {
 			
 	}
 	
-	cout << "]" << endl;
+	cout << "] (" << GET_DEGREE(*_back) << ")" << endl;
 	
 }
 
 
+monom_t getLargestElementInChild(Buffer* b) {
+	
+	if (b == NULL)
+		return 0;
+		
+	if (b->isExhausted()) 
+		return 0;
+		
+	if (!b->isEmpty()) {
+		return b->front();
+	}
+	
+	
+	// if b is empty but not exhausted, check its children
+	monom_t leftElem = getLargestElementInChild(b->getLeftChild());
+	monom_t rightElem = getLargestElementInChild(b->getRightChild());
+	
+	return (GET_DEGREE(leftElem) > GET_DEGREE(rightElem)) ? leftElem : rightElem;
+	
+}
 
 
-void checkInvariant(Buffer* b) {
-	if (b->isEmpty())
+monom_t getSmallestInParent(Buffer* b) {
+	while (b != NULL && b->getType() != I_BUF_T) {
+		if (b->isEmpty())
+			b = b->getParent();
+		else
+			return b->back();
+	}
+	
+	return 1000000;
+}
+
+
+void Buffer::checkInvariant() {
+	// if the buffer is empty or it is the I-buffer, then the invariant is not broken
+	if (isEmpty() || _bufferType == I_BUF_T) 
 		return;
 		
-	Buffer *left = b->getLeftChild();
-	Buffer *right = b->getRightChild();
-	
-	// check left child
-	if (left != NULL) {
-		if (!left->isEmpty()) {
-			assert (GET_DEGREE(b->back()) >= GET_DEGREE(left->front()));
-		}
+	// otherwise, check that the elements in the buffer are smaller than those of its parent, but larger
+	// than the elements in its children
+	deg_t leftLargestDegree = GET_DEGREE(getLargestElementInChild(_leftChild));		// largest degree in left path
+	deg_t rightLargestDegree = GET_DEGREE(getLargestElementInChild(_rightChild));	// largest degree in right path
+	deg_t parentSmallestDegree = GET_DEGREE(getSmallestInParent(_parent));			// smallest degree in parent path (i.e. upwards)
+
+	assert (parentSmallestDegree >= GET_DEGREE(*_front));
+	assert (leftLargestDegree <= GET_DEGREE(*_back));
+	if (rightLargestDegree > GET_DEGREE(*_back)) {
+		cout << "RLD = " << rightLargestDegree << ", ME " << GET_DEGREE(*_back) << endl;
 	}
-	// check right child
-	if (right != NULL) {
-		if (!right->isEmpty()) {
-			assert (GET_DEGREE(b->back()) >= GET_DEGREE(right->front()));
-		}
-	}
-	
+	assert (rightLargestDegree <= GET_DEGREE(*_back));
+	// if (_parent != NULL && _parent->getType() != I_BUF_T && !_parent->isEmpty()) {
+	// 	if (GET_DEGREE(*_front) > GET_DEGREE(_parent->back())) {
+	// 		_parent->print();
+	// 		print();
+	// 	}
+	// 	assert (GET_DEGREE(*_front) <= GET_DEGREE(_parent->back()));
+	// }
+	// if (_leftChild != NULL && !_leftChild->isEmpty()) {
+	// 	assert (GET_DEGREE(*_back) >= GET_DEGREE(_leftChild->front()));
+	// }
+	// if (_rightChild != NULL && !_rightChild->isEmpty()) {
+	// 	assert (GET_DEGREE(*_back) >= GET_DEGREE(_rightChild->front()));
+	// } 
 }
+
+
+
+

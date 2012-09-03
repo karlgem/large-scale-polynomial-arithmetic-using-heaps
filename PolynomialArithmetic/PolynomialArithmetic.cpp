@@ -1929,7 +1929,7 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 		}
 	}
 	
-	size_t largestSizeReached = 0;
+
 	
 	
 	// get the max number of monomials in the f's, and the total heap capacity
@@ -2084,9 +2084,6 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 //		A->insert(currDegree, currCoef, 0);
 		A->insert(currDegree, 1, 0);
 		
-		if (largestSizeReached < A->size())
-			largestSizeReached = A->size();
-		// pauseProfiling();
 		
 		// set the IDs and update the counters
 		degreeToSource[currDegree].push_back(i);		// add an index to the polynomial pair that generated this degree
@@ -2179,9 +2176,6 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 //						A->insert(currDegree, currCoef, 0);
 						A->insert(currDegree, 1, 0);
 						
-						if (largestSizeReached < A->size())
-							largestSizeReached = A->size();
-						
 						degreeToSource[currDegree].push_back(source);		// add an index to the polynomial pair that generated this degree
 					}
 
@@ -2246,9 +2240,6 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 						if (verboseLevel(VERBOSE_HIGH)) cout << "Final: Size = " << A->size() << ", Inserting degree " << currDegree << ", coef " << currCoef << endl;
 //						A->insert(currDegree, currCoef, 0);
 						A->insert(currDegree, 1, 0);
-						
-						if (largestSizeReached < A->size())
-							largestSizeReached = A->size();
 							
 						degreeToSource[currDegree].push_back(source);		// add an index to the polynomial pair that generated this degree
 					}
@@ -2283,10 +2274,7 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 	
 	if (verboseLevel(VERBOSE_LOW)) cout << "Extracting remaining monomials from the heap" << endl;
 	// up till now, all insertions have been done. What remains is to extract the rest of the monomials
-	// from the heap and add them to the result
-	A->print();
-	pausePrompt();
-	
+	// from the heap and add them to the result	
 	while (!A->isEmpty()) {
 		// start by extracting the maximum
 		monom_t maxMonomial = A->poll();
@@ -2301,8 +2289,6 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 	}
 	
 	if (verboseLevel(VERBOSE_LOW)) cout << "Done with multiplication process" << endl << endl;
-	
-	cout << "Largest size reached by the heap is: " << largestSizeReached << endl << endl;
 
 	delete A;
 }

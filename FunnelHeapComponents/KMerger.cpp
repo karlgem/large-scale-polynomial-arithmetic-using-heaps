@@ -322,10 +322,30 @@ void KMerger::print() {
 			destination++;
 		}
 	}
-	
-	
 }
 
 
+
+void postOrderCheck(Buffer* n) {
+	if (n == NULL)
+		return;
+	
+	// do not check leafs
+	if (n->isLeaf()) // || n->isExhausted())
+		return;
+
+	postOrderCheck(n->getLeftChild());		// check left child
+	postOrderCheck(n->getRightChild());		// check right child
+	
+	// do not check B-buffer
+	if (n->getType() != B_BUF_T) {
+		n->checkInvariant();			// check me
+	}
+}
+
+
+void KMerger::checkInvariant() {
+	postOrderCheck(output);
+}
 
 
