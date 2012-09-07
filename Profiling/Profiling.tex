@@ -268,11 +268,13 @@
    	\hline
 		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
 		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
-		 100		&			&			&	0		&	1					\\
-		 250		&			&			&	0		&	10					\\
-		 500		&			&			&	0		&	113					\\
-		 710		&			&			&	0		&	484					\\
-	\hline				
+		 		&			&			&			&						\\
+				&			&			&			&						\\
+%		 100		&			&			&	0		&	1					\\
+%		 250		&			&			&	0		&	10					\\
+%		 500		&			&			&	0		&	113					\\
+%		 710		&			&			&	0		&	484					\\
+%	\hline				
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -485,10 +487,14 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
-		 		&			&			&			&					\\
-		 		&			&			&			&					\\
+		 Number   & 	Degree	& Maximum 	& I/O Wait		&  Runtime 	& Total Number		 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 	& of sweeps			\\ \hline
+		 100		&			&			&	0		&	1		&	1407				\\
+		 250		&			&			&	0.06		&	7		&	8882				\\
+		 500		&			&			&	0.12		&	55		&	35627			\\
+		 710		&			&			&	0.25		&	147		&	71892			\\
+		1000		&			&			&	65		&	458		&	142688			\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -500,10 +506,13 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+		 Number   & 	Degree	& Maximum 	& I/O Wait		&  Runtime 	& Total Number	\\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 	& of sweeps		\\ \hline
+		 140		&			&			&	0		&	1		&	10138		\\
+		 350		&			&			&	0.2		&	25		&	185875		\\
+		 700		&			&			&	0.7		&	274		&	1570079		\\
+		1000		&			&			&	126		&	1013		&	4479936		\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -545,25 +554,58 @@
 \end{table}
 
 
-\newpage
-\bigskip{\bf Polynomial Multiplication Without STXXL using Binary Heap with Chaining on Optimized and Non-Optimized Sequence of Inserts \rm}
 
-% NO STXXL: BHC using Optimized Multiplication VS BHC using Regular Multiplication  - 0% Sparsity
+
+\newpage
+
+% NO STXXL: Binary Heap with Chaining using Regular sequence of Inserts
+
+\bigskip{\bf Polynomial Multiplication Without STXXL using Binary Heap with Chaining with Regular Sequence of Inserts \rm}
+
+% NO STXXL: Binary Heap with Chaining using Regular sequence of Inserts  - 0% Sparsity
 \begin{table}[htbp]
    \centering
-      \caption{NO STXXL: BHC using Optimized Multiplication (BHC-OM) VS BHC using Regular Multiplication (BHC-RM) - 0\% Sparsity} 
+      \caption{NO STXXL: Binary Heap with Chaining (BHC) using Regular sequence of Inserts  - 0\% Sparsity} 
    %\topcaption{Table captions are better up top} % requires the topcapt package
-   \begin{tabular}{|c|c|c|c|c|c|c|c|}
+   \begin{tabular}{|c|c|c|c|c|}
    	\hline
-		 Number   & Number    & BHC-OM & BHC-RM& BHC-OM & BHC-RM & BHC-OM    & BHC-RM 		 \\ 
-		 of pairs 	& of Chains &Capacity & Capacity & MaxSize & MaxSzie & Runtime (s)& Runtime (s)		\\ \hline
-		 100		& 199 	   & 200	    & 5050	      &	180	      &	199	       &	8	       &	8			\\
-		 250		& 499   	   & 500   	    & 31375     & 468	      & 499	       &       715	       &	 861			\\
-		 500		& 999	   &1000	   &125250     &	955	      &	999         &	      22668        &	26226		\\
-		 710		& 1419	   &1420	   &252405     &	1367	      &	1419	       & 142817          &		170262		\\
+		 Number   & Number		& Capacity	& MaxSize	&	Runtime		\\ 
+		 of pairs 	& of Chains  	& 			&  			& 	 (s)			\\ \hline
+		 100		& 199 	       	& 5050	     	&	199	      	&	8			\\
+		 250		& 499   	       	& 31375    	& 499	      	&	 861			\\
+		 500		& 999	      	&125250    	&	999         	&	26226		\\
+		 710		& 1419	   	&252405    	&	1419	      	&	170262		\\
 	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
+
+
+
+\newpage
+
+% NO STXXL: Binary Heap with Chaining using Optimized sequence of Inserts
+
+\bigskip{\bf Polynomial Multiplication Without STXXL using Binary Heap with Chaining with Optimized Sequence of Inserts \rm}
+
+% NO STXXL: Binary Heap with Chaining using Optimized sequence of Inserts  - 0% Sparsity
+\begin{table}[htbp]
+   \centering
+      \caption{NO STXXL: Binary Heap with Chaining (BHC) using Optimized sequence of Inserts  - 0\% Sparsity} 
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|}
+   	\hline
+		 Number	& 	Number    		& 	Capacity 	& 	MaxSize 	& Runtime    	 		 \\ 
+		 of pairs 	& 	of Chains 		&			& 			&	 (s)				\\ \hline
+		 100		& 	199 	   		&	 200	    	&	180	      	&	8	       			\\
+		 250		& 	499   	   	&	500   	& 	468	      	&       715	       			\\
+		 500		& 	999	   		&	1000	  	&	955	     	&	22668			\\
+		 710		& 	1419	   		&	1420	   	&	1367	      	& 	142817         		\\
+	\hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
 
 \end{document}  

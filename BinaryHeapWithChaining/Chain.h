@@ -47,8 +47,9 @@
 #define Chain_h
 
 
-typedef heap_t::iterator chain_t;		/**< \typedef definition of monomial type */
-typedef unsigned long long cParameter_t;	/**< \typedef holds the parameters of a chain */
+typedef heap_t::iterator chain_t;		/**< \typedef definition of chain type */
+typedef unsigned long long chain_size_t;	/**< \typedef definition of chain size type */
+
 
 
 /**
@@ -69,8 +70,8 @@ typedef unsigned long long cParameter_t;	/**< \typedef holds the parameters of a
 
 // the below two macros automatically unpack the size and capacity of a chain
 // based on the 'masks' and 'shifts' above
-#define GET_CHAIN_CAP(W) ((size_t) ((W & CHAIN_CAP_MASK) >> CHAIN_CAP_SHIFT))	/**< gets the capacity of the chain */
-#define GET_CHAIN_SIZE(W)  ((size_t) ((W & CHAIN_SIZE_MASK)))					/**< gets the size of the chain */
+#define GET_CHAIN_CAP(W) ((chain_size_t) ((W & CHAIN_CAP_MASK) >> CHAIN_CAP_SHIFT))	/**< gets the capacity of the chain */
+#define GET_CHAIN_SIZE(W)  ((chain_size_t) ((W & CHAIN_SIZE_MASK)))					/**< gets the size of the chain */
 
 
 #define CHAIN_OVERHEAD 1
@@ -83,38 +84,38 @@ typedef unsigned long long cParameter_t;	/**< \typedef holds the parameters of a
  * @param chainCapacity the chain's capacity
  * @return Returns a word containing the size and capacity of the chain
  */
-inline size_t createSizeCapPair(size_t chainSize, size_t chainCapacity) {
-    size_t word = chainSize;
+inline chain_size_t createSizeCapPair(chain_size_t chainSize, chain_size_t chainCapacity) {
+    chain_size_t word = chainSize;
     word = word | (chainCapacity << CHAIN_CAP_SHIFT);
 
     return word;
 }
 
-inline void setChainSize (chain_t &chain, size_t chainSize) {
-	size_t chainParameters = (*(chain + CHAIN_PARAMETERS_INDEX));
+inline void setChainSize (chain_t &chain, chain_size_t chainSize) {
+	chain_size_t chainParameters = (*(chain + CHAIN_PARAMETERS_INDEX));
 	chainParameters = chainParameters & CHAIN_CAP_MASK;		// reset the chain size to 0
 	chainParameters = chainParameters | (chainSize & CHAIN_SIZE_MASK);		// set the new chain size
 	*(chain + CHAIN_PARAMETERS_INDEX) = chainParameters;
 }
 
-inline size_t getChainSize(chain_t chain) {
+inline chain_size_t getChainSize(chain_t chain) {
 	return GET_CHAIN_SIZE(chain[CHAIN_PARAMETERS_INDEX]);
 }
 
 inline void incrementChainSize (chain_t &chain) {
-	size_t newChainSize = getChainSize(chain) + 1;		// increment chain size by 1
+	chain_size_t newChainSize = getChainSize(chain) + 1;		// increment chain size by 1
 	setChainSize(chain, newChainSize);
 }
 
 inline void decrementChainSize (chain_t &chain) {
-	size_t newChainSize = getChainSize(chain) -1;		// increment chain size by 1
+	chain_size_t newChainSize = getChainSize(chain) -1;		// increment chain size by 1
 	setChainSize(chain, newChainSize);
 }
 
 
 
 
-inline size_t getChainCapacity(chain_t chain) {
+inline chain_size_t getChainCapacity(chain_t chain) {
 	return GET_CHAIN_CAP(chain[CHAIN_PARAMETERS_INDEX]);
 }
 
@@ -123,7 +124,7 @@ inline bool chainIsEmpty(chain_t chain) {
 }
 
 
-inline void setChainParameters (chain_t &chain, size_t chainSize, size_t chainCapacity) {
+inline void setChainParameters (chain_t &chain, chain_size_t chainSize, chain_size_t chainCapacity) {
 	chain[CHAIN_PARAMETERS_INDEX] = createSizeCapPair(chainSize, chainCapacity);
 }
 

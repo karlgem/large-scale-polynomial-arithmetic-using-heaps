@@ -350,8 +350,8 @@ void BinaryHeapWithChaining::setupChainParameters () {
 	//cParameter_t param = 0;
 	size_t distanceIndex = 0;		// the index of the element (in the indexing structure) containing the distance to the chain
 	deg_t currDegree = 0;
-	const deg_t currChainSize = 0;
-	deg_t currChainCapacity = 0;
+	const chain_size_t currChainSize = 0;
+	chain_size_t currChainCapacity = 0;
 	
 	chain_t currChain = chains;		// point to the first chain
 	
@@ -409,7 +409,7 @@ void BinaryHeapWithChaining::addMonomialToChain (monom_t monomial) {
 	chain_t degChain = chains + getDistanceToChainOfDegree(degree);
 	
 	// make sure the chain (of predefined size) can hold more elements
-	size_t chainSize = getChainSize (degChain);
+	chain_size_t chainSize = getChainSize (degChain);
 	
  	if (verboseLevel(VERBOSE_HIGH))
 		cout << "Chain size = " << chainSize << "/" << getChainCapacity(degChain) << ". Adding degree = " << degree << ", Coef = " << GET_COEF(monomial) << endl;
@@ -428,7 +428,7 @@ monom_t BinaryHeapWithChaining::extractMonomialFromChainOfDegree(deg_t degree) {
 	// get a reference to the chain of that degree
 	chain_t degChain = chains + getDistanceToChainOfDegree(degree);
 	
-	size_t chainSize = getChainSize(degChain);
+	chain_size_t chainSize = getChainSize(degChain);
 	
 	if (chainSize == 0) {
 		// should throw exception
