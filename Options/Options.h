@@ -14,13 +14,19 @@
 #include <string>
 #include <time.h>
 #include <unistd.h>
-#include <stxxl.h>
 #include <vector>
 #include "../Polynomial/Monomial.h"
 
-//#include "../PolynomialArithmetic/PolynomialArithmetic.h"
-typedef stxxl::VECTOR_GENERATOR<w_type, 1, 16*256, 4096>::result heap_t;
-//typedef std::vector<w_type> heap_t;
+// check to see if compilation was done with/without STXXL
+
+
+// UNCOMMENT FOR STXXL (COMMENT THE SECOND TYPEDEF)
+// #include <stxxl.h>
+// typedef stxxl::VECTOR_GENERATOR<w_type, 1, 16*256, 4096>::result heap_t;
+
+typedef std::vector<w_type> heap_t;
+
+
 
 typedef heap_t::iterator mem_t;
 

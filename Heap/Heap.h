@@ -21,11 +21,8 @@
 #include "../Polynomial/Monomial.h"
 #include "../Options/Options.h"
 #include <vector>
-#include <stxxl.h>
 
 using namespace std;
-
-//typedef std::vector<w_type> heap_t;
 
 typedef unsigned long long heap_size_t;
 

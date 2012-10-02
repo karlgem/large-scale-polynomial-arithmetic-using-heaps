@@ -137,11 +137,7 @@ monom_t BinaryHeap::peek() {
  poll: extracts the maximum value from the heap
  */
 monom_t BinaryHeap::poll() {
-	if (heapSize < 0) {
-		printf("ERROR: heap underflow");
-		return 0;
-	}
-	
+
 	if (heapSize == 0) {			// heap is empty
 		return 0;
 	}

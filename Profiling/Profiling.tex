@@ -153,13 +153,13 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
-		 100		&			&			&	0		&	1					\\
-		 250		&			&			&	132		&	144					\\
-		 500		&			&			&	112		&	257					\\
-		 710		&			&			&	308		&	880					\\				
-		 1000	&			&			&	1454		&	3758					\\
+		 Number   & 	Number 	&Capacity		& Maximum	& I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&	of Chains	& 			&Heap Size	& Time (s)		&	(s)		 \\ \hline
+		 100		&	199		&			&	199		&	0.9		&	3		\\
+		 250		&	499		&			&	499		&	17.11	&	40		\\
+		 500		&	999		&			&	999		&	116.45	&	340		\\
+		710		&	1419		&			&	1419		&	335.89	&	1140		\\
+		1000		&	1999		&			&	1999		&	1217.21	&	4086		\\
 	\hline
    \end{tabular}
    \label{tab:booktabs}
@@ -172,10 +172,14 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+		 Number   & 	Number 	&Capacity		& Maximum	& I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&	of Chains	& 			&Heap Size	& Time (s)		&	(s)		 \\ \hline
+		 140		&	279		&			&	279		&	0.7		&	2		\\
+		 350		&	693		&			&	691		&	11.45	&	26		\\
+		 700		&	1397		&			&	1396		&	109.11	&	257		\\
+		1000		&	1996		&			&	1996		&	268.57	&	789		\\
+		1400		&	2799		&			&	2797		&	1164		&	2901		\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -326,10 +330,10 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 Number   & 	Degree	& Maximum 	& I/O Wait		& Runtime 	 \\ 
 		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+				&			&			&			&						\\
+				&			&			&			&						\\
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -341,7 +345,7 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
+		 Number   & 	Degree	& Maximum 	& I/O Wait		& Runtime 	 \\ 
 		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
 		 		&			&			&			&						\\
 		 		&			&			&			&						\\
@@ -378,10 +382,14 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+		 Number   & 	Number 	&Capacity		& Maximum	& I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&	of Chains	& 			&Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		100		&	199		&			&	180		&0.2			& 1			\\
+		250		&	499		&			&	468		&99			&117		\\
+		710		&	1419		&			&	1367		&3713		& 4123		\\
+		1000		&	1999		&			&	1937		&16618		&17938		\\
+%		1500		&			&			&			&			&			\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -393,10 +401,14 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		& Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+		 Number   & 	Number 	&Capacity		& Maximum	& I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&	of Chains	& 			&Heap Size	& Time (s)		&	(s)		 		\%				\\ \hline
+		 140		&	279		&			&	251		& 0.75		&	2		\\
+		 350		&	693		&			&	640		&67.58		&	79		\\
+		 700		&	1397		&			&	1311		&696.39		&	793		\\
+		1000		&	1996		&			&	1908		&3012.6		&	3318		\\
+		1400		&	2799		&			&	2694		&33126.2		&	34117	\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -434,10 +446,14 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & I/O Wait		&  Runtime  \\ 
-		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 		\%				\\ \hline
-		 		&			&			&			&					\\
-		 		&			&			&			&					\\
+		 Number   & 	Degree	& Maximum 	& I/O Wait		&  Runtime 	& Total Number		 \\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 	& of sweeps			\\ \hline
+		 100		&			&			&	65.83	&	181		&	42272				\\
+		 250		&			&			&	202.57	&	776		&	654904				\\
+		 500		&			&			&			&			&				\\
+		 710		&			&			&	17503	&	31889	&	14944340			\\
+		1000		&			&			&			&			&				\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -449,10 +465,13 @@
    %\topcaption{Table captions are better up top} % requires the topcapt package
    \begin{tabular}{|c|c|c|c|c|c|}
    	\hline
-		 Number   & 	Degree	& Maximum & 	I/O Wait	&  Runtime 	 \\ 
-		 of pairs 	&			& Heap Size	& 	Time (s)		&	(s)	 		\%				\\ \hline
-		 		&			&			&			&						\\
-		 		&			&			&			&						\\
+		 Number   & 	Degree	& Maximum 	& I/O Wait		&  Runtime 	& Total Number	\\ 
+		 of pairs 	&			& Heap Size	& Time (s)		&	(s)	 	& of sweeps		\\ \hline
+		 140		&			&			&	0.74		&	114		&	29815		\\
+		 350		&			&			&	118.405	&	540		&	454293		\\
+		 700		&			&			&	2006.24	&	4928		&	3603585		\\
+		1000		&			&			&      11013	&	20729	&	10479226		\\
+	\hline
    \end{tabular}
    \label{tab:booktabs}
 \end{table}
@@ -512,6 +531,7 @@
 		 350		&			&			&	0.2		&	25		&	185875		\\
 		 700		&			&			&	0.7		&	274		&	1570079		\\
 		1000		&			&			&	126		&	1013		&	4479936		\\
+		1400		&			&			&	66.52	&	2973		&	12755915		\\
 	\hline
    \end{tabular}
    \label{tab:booktabs}
@@ -606,6 +626,51 @@
    \label{tab:booktabs}
 \end{table}
 
+
+\newpage
+
+% Benchmark: POLYNOMIAL MULTIPLICATION ON BINARY HEAP
+\bigskip{\bf Benchmarking using individual binary heaps for each multiplication pair \rm}
+
+% BENCHMARK - BINARY - 0
+\begin{table}[htbp]
+   \centering
+      \caption{Benchmark Polynomial Multiplication using Binary Heap - 0\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&Time (s)		&	(s)		 		\%				\\ \hline
+		100 		&	0.2		&	2					\\
+		 250		&	0.8		&	38					\\
+		500		&	0.8		&	352					\\
+		710		&	1.36		&	1123					\\
+		1000		&	2.48		&	3588					\\
+	\hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
+
+
+
+% BENCHMARK - BINARY - 50
+\begin{table}[htbp]
+   \centering
+      \caption{Benchmark Polynomial Multiplication using Binary Heap - 50\% Sparsity}
+   %\topcaption{Table captions are better up top} % requires the topcapt package
+   \begin{tabular}{|c|c|c|c|c|c|}
+   	\hline
+		 Number   & I/O Wait		& Runtime 	 \\ 
+		 of pairs 	&Time (s)		&	(s)		 		\%				\\ \hline
+		140 		&	0.8		&	3					\\
+		 350		&	0.9		&	24					\\
+		700		&	0.8		&	239					\\
+		1000		&	1.02		&	689					\\
+		1400		&	2.70		&	2132					\\
+	\hline
+   \end{tabular}
+   \label{tab:booktabs}
+\end{table}
 
 
 \end{document}  

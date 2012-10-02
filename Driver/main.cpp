@@ -16,7 +16,9 @@
 #include <sstream>
 #include <time.h>
 #include "../PolynomialArithmetic/PolynomialArithmetic.h"
+#include "../PolynomialGenerator/PolynomialGenerator.h"
 #include "../Options/Options.h"
+#include "../IOHandling/IOHandling.h"
 
 using namespace std;
 
@@ -27,111 +29,107 @@ void readArgs(int argc, char *argv[]);
 
 // arguments from main
 string inputName = "mult.in";
+string programType = "";
 bool writeMultiplicationOutputToFile = false;
 
-// global variables for manipulating user-defined options (ex: verbose mode)
-//extern bool VERBOSE = false;
+bool type_gen = false;		// polynomial generator
+bool type_sop = false;		// summation of products
+
+unsigned int GEN_numOfPairs;
+float GEN_sparsity;
 
 int main (int argc, char * argv[]) {
 
 	// read/update arguments
 	readArgs(argc, argv);
+	
+	
+	if (type_sop) {	
+		int numOfPairs = 0;
+	    vector<poly_t> f_polynomials;
+	    vector<poly_t> g_polynomials;
     
-    ifstream in(inputName.c_str());
-    string line;
+
+		readInputFile(inputName, f_polynomials, g_polynomials, numOfPairs);
+    
+    
+		poly_t result;
+	
+		startTimer();
+		summationOfProducts(f_polynomials, g_polynomials, result);
+		stopTimer();
     
 	
-    getline(in, line);
-    int numOfPairs = atoi(line.c_str());
-    
-    vector<poly_t> f_polynomials (numOfPairs);
-    vector<poly_t> g_polynomials (numOfPairs);
-    
-    poly_t f, g;
+		cout << "result size = " << result.size() << endl;
+
+		// compute elapsed time
+		cout << "Time = " << getElapsedTime() << endl;   
+
+		// open a file to write the execution time to
+		ofstream timesFile;
+		string timeFilename;
+		getTimeFilename(timeFilename);
+		timesFile.open (timeFilename.c_str(), ios::out | ios::app);
 	
-    // loop over input file and collect all pairs
-
-	// read the f_polynomials
-    for (int i = 0; i < numOfPairs; i++) {
-        
-        // read the f polynomial of the i'th pair
-        getline(in, line);
-        line = line.substr(line.find("=") + 1);
-        parsePolynomialString(line, f);
-                
-        
-        // add f to its corresponding vectors
-        f_polynomials[i] = f;
-
-		string f_string;
-		toString(f, f_string);
+		// write the input size with the time
+		timesFile << numOfPairs << ": " << getElapsedTime() << endl;
+	
+		// close the times file
+		timesFile.close();
+	
+		// write the multiplication output to the output file
+		if (printMultOutput()) {
+			string result_string;
+		    polyToString(result, result_string);
+	
+			string outputFilename;
+			getOutputFilename(outputFilename);
 		
-		// reset the polynomials to read new ones
-		f.clear();
-    }
-
-	// read the g_polynomials
-    for (int i = 0; i < numOfPairs; i++) {
+			ofstream mult_output;
+			mult_output.open (outputFilename.c_str(), ios::out | ios::app);
+			mult_output << result_string.c_str() << endl;
+			mult_output.close();
+		}
 	
-        // read the g polynomial of the i'th pair
-        getline(in, line);
-        line = line.substr(line.find("=") + 1);
-        parsePolynomialString(line, g);
-        
-        
-        // add g to its corresponding vectors
-        g_polynomials[i] = g;
-
-		string g_string;
-		toString(g, g_string);
-		
-		// reset the polynomial to read a new one
-		g.clear();
-    }
-
-	poly_t result;
-//	multiplyMultiplePairs(f_polynomials, g_polynomials, result);
-//	multiplyMultiplePairsOptimized(f_polynomials, g_polynomials, result);
-//	OSImultiply(f_polynomials, g_polynomials, result);
-	
-	startTimer();
-	summationOfProducts(f_polynomials, g_polynomials, result);
-	stopTimer();
-    
-	
-	cout << "result size = " << result.size() << endl;
-
-	// compute elapsed time
-	cout << "Time = " << getElapsedTime() << endl;   
-
-	// open a file to write the execution time to
-	ofstream timesFile;
-	string timeFilename;
-	getTimeFilename(timeFilename);
-	timesFile.open (timeFilename.c_str(), ios::out | ios::app);
-	
-	// write the input size with the time
-	timesFile << numOfPairs << ": " << getElapsedTime() << endl;
-	
-	// close the times file
-	timesFile.close();
-	
-	// write the multiplication output to the output file
-	if (printMultOutput()) {
-		string result_string;
-	    toString(result, result_string);
-	
+		// cout << *(stxxl::stats::get_instance());
+	}
+	else if (type_gen) {
 		string outputFilename;
 		getOutputFilename(outputFilename);
-		
-		ofstream mult_output;
-		mult_output.open (outputFilename.c_str(), ios::out | ios::app);
-		mult_output << result_string.c_str() << endl;
-		mult_output.close();
+		generatePolynomials (GEN_numOfPairs, GEN_sparsity, outputFilename);
 	}
-	
-	cout << *(stxxl::stats::get_instance());
 }
+
+void usage() {
+	cerr << "Usage of the Polynomial Arithmetic Library" << endl <<endl;
+
+	cerr << "Summation of Products: Computes the sum of polynomial pairwise-products" << endl;
+	cerr << "usage: main -t sop -h heap_name [-osi] -i input_file [-o output_file] [-v verbose_level] " << endl;
+	cerr << "Where: -h heap_name: name of heap used; names below (default binary)" << endl;
+	cerr << "       -osi: enables the optimized sequence of inserts" << endl;
+	cerr << "       -i input_file: name of input file" << endl;
+	cerr << "       -o output_file: name of the output file" << endl;
+	cerr << "       -v verbose_level: the degree of the verbose mode (1 - 3)" << endl;
+	cerr << endl << endl;
+	
+	cerr << "Polynomial Generator: Generates polynomials of the summation of products routine" << endl;
+	cerr << "usage: main -t gen -n npairs [-s sparsity] -o output_file" << endl;
+	cerr << "Where: -n npairs: the number of polynomial pairs to generate" << endl;
+	cerr << "       -s sparsity: the sparsity of the polynomials" << endl;
+	cerr << "       -o output_file: name of the output file" << endl;
+	cerr << endl << endl;
+	
+	cerr << "Heap Names:" << endl;
+	cerr << "\tbinary --> standard binary heap" << endl;
+	cerr << "\tbinary-chaining --> binary heap (with chaining)" << endl;
+	cerr << "\tfunnel --> funnel heap" << endl;
+	cerr << "\tfunnel-merging --> funnel heap (with merging optimization)" << endl;
+	cerr << endl;
+
+	// quit program
+	exit(0);
+}
+
 
 // read/update the arguments for running the test case
 void readArgs(int argc, char *argv[]) {
@@ -139,33 +137,64 @@ void readArgs(int argc, char *argv[]) {
 	if (argc == 1) 
 		usage();	
 		
-	bool choseOneHeapType = false;
-	int numOfHeapsChosen = 0;
+	// booleans to check validity of (number of) arguments
+	bool choseHeap = false;
 	bool choseInputFile = false;
+	bool choseOutputFile = false;
+	bool choseProgramType = false;
+	bool choseNumberOfPairs = false;
+	
 	
 	// if there are arguments, read them
 	for (int i = 1; i < argc; i++) {
-		if (strcmp(argv[i], "-i") == 0) {	// choosing input file
-			inputName = argv[++i];
-			choseInputFile = !choseInputFile;
+		if (strcasecmp(argv[i], "-t") == 0) {			// program type
+			if (choseProgramType) {
+				printError("Only one program type can be used.");
+				exit(1);
+			}
+			programType = argv[++i];
+			choseProgramType = true;			
 		}
-		else if (strcmp(argv[i], "-v") == 0) {
+		else if (strcasecmp(argv[i], "-i") == 0) {		// input file
+			if (choseInputFile) {
+				printError("Only one input file can be used.");
+				exit(1);
+			}
+			inputName = argv[++i];
+			choseInputFile = true;
+		}
+		else if (strcasecmp(argv[i], "-v") == 0) {		// verbose level
 			int vLevel = atoi(argv[++i]);
 			setVerbose(vLevel);
 		}
-		else if (strcmp(argv[i], "-o") == 0) {
+		else if (strcasecmp(argv[i], "-o") == 0) {		// output file
 			printMultOutput(true);
 			setOutputFilename(argv[++i]);
+			choseOutputFile = true;
 		}
-		else if (strcmp(argv[i], "-h") == 0) {
+		else if (strcasecmp(argv[i], "-h") == 0) {		// heap name
+			if (choseHeap) {
+				printError("Only one heap name can be used.");
+				exit(1);
+			}
 			chooseHeap(argv[++i]);
-			
-			numOfHeapsChosen++;
+			choseHeap = true;
 		}
-		else if (strcmp(argv[i], "-osi") == 0) {
+		else if (strcasecmp(argv[i], "-osi") == 0) {	// osi
 			setOptimizedSequenceOfInserts(true);
 		}
-		else if (strcmp(argv[i], "-help") == 0) {
+		
+		// arguments for the generator type
+        else if (strcmp(argv[i], "-n") == 0) {  // number of pairs
+            GEN_numOfPairs = atoi(argv[++i]);
+			choseNumberOfPairs = true;
+        }
+        else if (strcmp(argv[i], "-s") == 0) {  // set sparsity
+            GEN_sparsity = atof(argv[++i]);
+        }
+
+		// help and invalid arguments
+		else if (strcasecmp(argv[i], "-help") == 0) {	// help
 			usage();
 		}
 		else {
@@ -175,34 +204,37 @@ void readArgs(int argc, char *argv[]) {
 		}
 	}
 	
-	// if any "required" parameter was not given, then print message
-	choseOneHeapType = numOfHeapsChosen == 1;
-	if (!(choseInputFile) || !choseOneHeapType) 
-		usage();
+	
+	// check if any "required" parameter was not given, then print message
+	if (!choseProgramType) {
+		printError("Please choose a program type (ex sop, gen)");
+		exit(1);
+	}
+	
+	// check parameters for sop (i.e. summation of products)
+	if (strcasecmp(programType.c_str(), "sop") == 0) {
+		type_sop = true;		
+		if (!choseHeap) {
+			printError("Please choose a heap name.");
+			exit(1);
+		}
+		if (!choseInputFile) {
+			printError("Please choose an input filename.");
+			exit(1);
+		}
+	}
+	
+	// check parameters for gen (i.e. polynomial generator)
+	if (strcasecmp(programType.c_str(), "gen") == 0) {
+		type_gen = true;
+		if (!choseNumberOfPairs) {
+			printError("Please choose the number of pairs.");
+			exit(1);
+		}
+		if (!choseOutputFile) {
+			printError("Please choose an output filename.");
+			exit(1);
+		}
+	}
 		
-}
-
-void usage() {
-	cerr << "usage: Polynomial Arithmetic" << endl <<endl;
-
-	cerr << "Driver: main -h (heap_name) -i (input_file)" << endl;
-	cerr << "Where: -h (heap_name) = name of heap used; names below (default binary)" << endl;
-	cerr << "       -i (input_file) = name of input file" << endl;
-	cerr << endl;
-	
-	cerr << "Heap Names:" << endl;
-	cerr << "\tbinary --> standard binary heap" << endl;
-	cerr << "\tbinary-chaining --> binary heap (with chaining)" << endl;
-	cerr << "\tfunnel --> funnel heap" << endl;
-	cerr << "\tfunnel-merging --> funnel heap (with merging optimization)" << endl;
-	cerr << endl;
-	
-	cerr << "Optional Arguments:" << endl;
-	cerr << "\t-osi: performs the multiplication using an optimized sequence of inserts" << endl;
-	cerr << "\t-v (num): puts the program in verbose mode (prints information)" << endl;
-	cerr << "\t\tnum: the level of verbosity (1, 2, or 3)" << endl;
-	cerr << "\t-o (output_file): print the output to a file with name 'output_file'" << endl;
-
-	// quit program
-	exit(0);
 }

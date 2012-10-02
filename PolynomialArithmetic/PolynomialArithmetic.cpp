@@ -6,7 +6,7 @@
 #include "PolynomialArithmetic.h"
 #include "../Options/Options.h"
 
-// heaps
+// include heaps
 #include "../Heap/Heap.h"
 #include "../FunnelHeap/FunnelHeap.h"
 #include "../BinaryHeap/BinaryHeap.h"
@@ -19,30 +19,32 @@
 #define TURN_ON_PAUSES false
 #define ASSERT_REL_BOUNDS false
 
-#define VERBOSE 
-
 using namespace std;
-// using namespace fhmerging;
+
+/***** Function Prototypes *****/
+void sopPackedIDs (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result);
+void sopUnpackedIDs (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result);
+void singleOSImultiply (poly_t &f, poly_t &g, poly_t &result);
+void sopOSI (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result);
+
+void bhWithChainingPreprocessing (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials);
+
 
 int p = 113;                      // prime 
 void init(int prime) {
     p = prime;
 }
 
-// function prototypes
-inline void skipSpaces (char &current, size_t &index, string line);
-void getMaxFromAllPairs (int ** &g_i_s, monom_t description [], vector<poly_t*> &f_polynomials, vector<poly_t*> &g_polynomials);
-void bhWithChainingPreprocessing (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials);
-
-// OSI stands for optimized sequence of inserts
-
-void singleOSImultiply (poly_t &f, poly_t &g, poly_t &result);
-void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result);
-
-
-
-// multiply multiple pairs
-void multiplyMultiplePairs(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
+/*
+ *	Computes the summation of the products of polynomial pairs. This version packs ID's into
+ *	each monomial, making the ID management easier, but limits the flexibility of the data
+ *	structures that are being used.
+ *
+ *	@param f_polynomials the set of f polynomials
+ *	@param g_polynomials the set of g polynomials
+ *	@param result the variable that will hold the result
+ */
+void sopPackedIDs(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
 	/*
 	 * General Code Sketch:
 	 *
@@ -368,579 +370,7 @@ void multiplyMultiplePairs(std::vector<poly_t> &f_polynomials, std::vector<poly_
 
 
 
-
-// returns the degree of the polynomial
-deg_t deg(const poly_t &p) {
-	return GET_DEGREE(p[0]);
-}
-
-
-// parse the polynomial string into a poly_t
-void parsePolynomialString (string p, poly_t &result) {
-    
-    //long res_size = getNumberOfMonomials(p.c_str());
-    p.append("?");      // ? is a sentinel value
-    
-	// reserve the size for the result
-   	// int resultPosition = 0;    
-	
-	string num = "";
-    
-    coef_t coef = 0;
-    deg_t degree = 0;
-	
-	size_t i = 0;               // to traverse the poly string]
-    char current = p[i++];
-    skipSpaces(current, i, p);
-    
-	while (current != '?') {
-        if (current == 'x') {
-            coef = 1;
-            
-            current = p[i++];
-            
-            if (current == '^') {
-                current = p[i++];       // current is (start of) a number
-                
-                while (current >= '0' && current <= '9') {
-                    //num.append(current + "");
-                    num += current;
-                    current = p[i++];
-                }
-                
-                degree = atoll(num.c_str());
-                num.clear();
-            }
-            else {      // degree is 1
-                degree = 1;
-            }
-            
-            skipSpaces(current, i, p);   // go to nearest '+' or end
-        }
-        else {      // current is a number
-            num.clear();
-            while (current >= '0' && current <= '9') {
-                //num.append(current + "");
-                num += current;
-                current = p[i++];
-                
-            }
-            
-            coef = atoll(num.c_str());
-            num.clear();
-            
-            // coef read; check for degree
-            
-            if (current == '*') {           // degree exists
-                current = p[i++];           // current = x
-                
-                current = p[i++];           // current is ^ or end of monomial
-                
-                if (current == '^') {       
-                    current = p[i++];       // current is (start of) a number
-                    
-                    while (current >= '0' && current <= '9') {
-                        //num.append(current + "");
-                        num += current;
-                        current = p[i++];
-                    }
-                    
-                    degree = atoll(num.c_str());
-                    num.clear();
-                }
-                else {      // degree is 1
-                    degree = 1;
-                }
-                
-            }
-            else {              // degree is 0
-                degree = 0;
-            }
-            
-            skipSpaces(current, i, p);
-        }
-        
-		result.push_back(createMonomial(degree, coef, 0));
-        
-        
-        if (current == '?') {       // done reading poly
-            break;
-        }
-        else {      // current is '+'
-            current = p[i++];
-            skipSpaces(current, i, p);
-        }
-	}
-	
-}
-
-
-inline void skipSpaces (char &current, size_t &index, string line) {
-    while (index <= line.length() && current == ' ') {
-        current = line[index++];
-    }
-}
-
-
-/*
- getNumberOfMonomials: gets the number of monomials in a (SORTED) encoded polynomial
- */
-int getNumberOfMonomials (const char *f) {
-	const char *current = f;
-	
-	int numberOfMonomails = 1;
-	while ((*current) != '\0') {
-		if ((*current) == '+') {		// found an exponent
-			numberOfMonomails++;
-		}
-		
-		current++;
-	}
-	
-	return numberOfMonomails;
-}
-
-size_t polynomialSize(const poly_t &p) {
-    return p.size();
-   // return GET_DEGREE(p[0]);
-}
-
-
-
-/*
- *  getMaxFromPair: Updates the description array with information about
- *                  the max element in a specific pair. The description 
- *                  array will contain the following information:
- *                      a) At index 0: the degree of the max element
- *                      b  At index 1: the coefficient of the max element
- *                      c) At index 2: the number of the pair in which it exists
- *                      d) At index 3: the index of the monomial in f
- *                      e) At index 4: the index of the monomial in g
- *
- *
- *  @param pairNumber:  the number of the pair from which the max is being 
- *                      retrieved. Note, 0 <= pairNumber < n, where n is the
- *                      total number of pairs.
- *
- *  @param g_i: an array containing the index of the next g-monomial to be multiplied 
- *              with its corresponding f-monomial. The index of the f-monomial that each
- *              g-index corresponds to is based on the index of that g-index. In other words,
- *              if c is a g-index located in the i'th position in the g_i array, then the
- *              next multiplication to be done is f_i * g_c.
- *
- *  @param description: an array (of size 5) that will be updated to contain a description
- *                      of the max element (as described above). Caution: the description
- *                      array should be allocated (with size 5) before being sent as a
- *                      parameter to this function, or else the behavior is undefined.
- *
- *  @param f_polynomials: a vector of the f-polynomials
- *
- *  @param g_polynomials: a vector of the g-polynomials
- */
-inline void getMaxFromPair(size_t pairNumber, int g_i [], monom_t description [], vector<poly_t*> &f_polynomials, vector<poly_t*> &g_polynomials) {
-    
-    // loop over the multiplications of each f-monomial with its corresponding
-    // g-monomial (identified by the g_i index array) in the specified pair
-    // (stated by 'pairNumber') , and retrieve the element with the max degree, 
-    // noting its description
-    
-    // get the specified pair of f_i and g_i polynomials
-    poly_t* f_poly = f_polynomials[pairNumber]; 
-    poly_t* g_poly = g_polynomials[pairNumber];
-    
-    
-    deg_t maxDegree = 0;
-    deg_t tempDegree = 0;
-    coef_t tempCoef = 0;
-    
-    // loop on all products of the monomials in the current pair, and find the max
-    for (size_t i = 0; i < polynomialSize(*f_poly); i++) {
-        if (g_i[i] != -1) {
-            tempDegree = GET_DEGREE(f_poly->operator[](i)) + GET_DEGREE(g_poly->operator[](g_i[i]));
-            tempCoef = GET_COEF(f_poly->operator[](i)) * GET_COEF(g_poly->operator[](g_i[i]));
-            
-            // if we found a new max element, update the description array
-            if (tempDegree >= maxDegree) {
-                maxDegree = tempDegree;
-                
-                description[0] = maxDegree;     // the value of the degree
-                description[1] = tempCoef;       // the value of the coefficient
-                description[2] = pairNumber;    // the number of the product pair
-                description[3] = i;             // the number of the f-monomial
-                description[4] = g_i[i];        // the number of the g-monomial
-            }
-        }
-    }
-    
-    
-}
-
-
-/*
- *  getMaxFromAllPairs: Updates the description array with information about
- *                      the max element in a ALL pairs. The description 
- *                      array will contain the following information:
- *                          a) At index 0: the degree of the max element
- *                          b  At index 1: the coefficient of the max element
- *                          c) At index 2: the number of the pair in which it exists
- *                          d) At index 3: the index of the monomial in f
- *                          e) At index 4: the index of the monomial in g
- *
- *
- *  @param g_i_s:   a 2D array containing the the g_i array of each pair. For every f_i 
- *                  polynomial, the g_i array contains information on how to multiply the 
- *                  every monomial of f_i. Let c be a g-index located in the j'th position 
- *                  of the g_i array, then the next multiplication to be done is f_j * g_c.
- * 
- *
- *  @param description: an array (of size 5) that will be updated to contain a description
- *                      of the max element (as described above). Caution: the description
- *                      array should be allocated (with size 5) before being sent as a
- *                      parameter to this function, or else the behavior is undefined.
- *
- *  @param f_polynomials: a vector of the f-polynomials
- *
- *  @param g_polynomials: a vector of the g-polynomials
- */
-
-void getMaxFromAllPairs (int ** &g_i_s, monom_t description [], vector<poly_t*> &f_polynomials, vector<poly_t*> &g_polynomials) {
-
-    monom_t tempDescription [5]; // the array containing the description of a possible max
-    
-    
-    // find the max element from all pairs
-    for (size_t pair_index = 0; pair_index < f_polynomials.size(); pair_index++) {
-        // get a new (possible) max
-        getMaxFromPair(pair_index, g_i_s[pair_index], tempDescription, f_polynomials, g_polynomials);
-        
-        // now compare with previously found max, and make adjustments if necessary
-        if (tempDescription[0] > description[0]) {
-            
-            // copy values of tempDescription to maxDescription
-            description[0] = tempDescription[0];
-            description[1] = tempDescription[1];
-            description[2] = tempDescription[2];
-            description[3] = tempDescription[3];
-            description[4] = tempDescription[4];
-        }
-    }
-    
-}
-
-
-//// multiply multiple pairs
-//poly_t* multiplyMultiplePairs(vector<poly_t*> &f_polynomials, vector<poly_t*> &g_polynomials) {
-//	/*
-//	 * General Code Sketch:
-//	 *
-//	 *  1)  Let S = n_1 + n_2 + ... + n_k, where n_i is the number of 
-//     *      monomials in f_i (for 1 <= i <= k).
-//     *  2)  Insert the S maximum products of monomials (from all (f_i, g_i) 
-//     *      pairs) into the heap.
-//     *  3)  Repeat until all pairs have been fully traversed:
-//     *          i)  Extract the maximum elemement from the heap
-//     *              and place it in the result
-//     *         ii)  Insert the next maximum element into the heap
-//     *  4)  When all pairs have been traversed, extract all elements
-//     *      from the max heap and place them in the result
-//	 */
-//    
-//    
-//    // STEP 1: Calculate S and do some basic setups
-//    
-//    // get S = n_1 + n_2 + ... + n_k (i.e. the number of monomials in the f's)
-//    size_t S = 0;
-//for (size_t i = 0; i < f_polynomials.size(); i++) {
-//        S += polynomialSize(*f_polynomials[i]);
-//    }
-//    
-//    // Setup a mechanism to find out what the next (max) element to insert is and 
-//    // from which pair is it taken from. The idea is that we find the max element
-//    // from each product pair of (f_i, g_i), and then get the max of all of these.
-//    // The getMaxFromPair() method is used to get a description of the location and
-//    // value of the max element in each pair.
-//    
-//    // First: 2D array containing the the g_i array of each pair. For every f_i 
-//    // polynomial, the g_i array contains information on how to multiply the 
-//    // every monomial of f_i. Let c be a g-index located in the j'th position 
-//    // of the g_i array, then the next multiplication to be done is f_j * g_c.
-//    
-//    size_t maxNumberOfMonomials = 0;
-//    size_t currentNumberOfMonomials = 0;
-//    for (size_t i = 0; i < f_polynomials.size(); i++) {
-//        // get the number of monomials in f_i
-//        currentNumberOfMonomials = f_polynomials[i]->size();
-//        
-//        // compare with the previous max
-//        if ( currentNumberOfMonomials > maxNumberOfMonomials) {
-//            maxNumberOfMonomials = f_polynomials[i]->size();
-//        }
-//    }
-//    
-//    // allocate 2D array of g_i's
-//    int g_i_s [f_polynomials.size()][maxNumberOfMonomials];
-//    
-//    // set its default values. For every monomial, set its corresponding g-index
-//    // to 0. All spaces in the 2D array that do not correspond to any f-monomial
-//    // are set to -1
-//    for (size_t i = 0; i < f_polynomials.size(); i++) {
-//        currentNumberOfMonomials = f_polynomials[i]->size();
-//        
-//        // set all values of g-index corresponding to (valid) f-monomials to 0
-//        for (size_t j = 0; j < currentNumberOfMonomials; j++) {
-//            g_i_s[i][j] = 0;
-//        }
-//        
-//        // set the remaining values that do not correspond to any valid f-monomial
-//        // to -1
-//        for (size_t j = currentNumberOfMonomials; j < maxNumberOfMonomials; j++) {
-//            g_i_s[i][j] = -1;
-//        }
-//    }
-//    
-//    
-//    
-//    // STEP 2: Insert the S max elements in the heap. 
-//    
-//    // To do that, loop on all pairs to find the maximum element to insert. Do this S times.
-//    
-//    // The two description arrays below will hold the following info:
-//    //      a) At index 0: the degree of the max element
-//    //      b) At index 1: the coefficient of the max element
-//    //      c) At index 2: the number of the pair in which it exists
-//    //      d) At index 3: the index of the monomial in f
-//    //      e) At index 4: the index of the monomial in g
-//    
-//    monom_t maxDescription [5];  // the array containing the description of the current max
-//    monom_t tempDescription [5]; // the array containing the description of a possible max
-//    
-//    
-//    // set default values for max description
-//    maxDescription[0] = 0;          // set the max degree to 0
-//    
-//    // allocate the heap
-//    monom_t* heap = initializeQueue(7);
-//    
-//    // keep track of the number of multiplications done (i.e. elements inserted in heap)
-//    monom_t multiplicationsDone = 0;
-//    
-//    // find the total number of monomial multiplication that will be done in the 
-//    // whole multiplication process
-//	size_t maxMultiplications = 0;
-//	for (int i = 0; i < f_polynomials.size(); i++) {
-//		maxMultiplications += f_polynomials[i]->size() * g_polynomials[i]->size();
-//	}
-//    
-//    // check if the newly inserted item was directly merged with an element
-//    // in the heap upon insert. If it was, then we can insert a new element
-//    // directly.
-//    bool mergedDirectly = false;
-//    
-//    // loop S times on all pairs (and as long as we can still do multiplications)
-//    for (size_t i = 0; i < S && multiplicationsDone < maxMultiplications; i++) {
-//        
-//        // find the max element from all pairs
-//        for (size_t pair_index = 0; pair_index < f_polynomials.size(); pair_index++) {
-//            // get a new (possible) max
-//            getMaxFromPair(pair_index, g_i_s[pair_index], tempDescription, f_polynomials, g_polynomials);
-//            
-//            // now compare with previously found max, and make adjustments if necessary
-//            if (tempDescription[0] >= maxDescription[0]) {
-//                
-//                // copy values of tempDescription to maxDescription
-//                maxDescription[0] = tempDescription[0];
-//                maxDescription[1] = tempDescription[1];
-//                maxDescription[2] = tempDescription[2];
-//                maxDescription[3] = tempDescription[3];
-//                maxDescription[4] = tempDescription[4];
-//            }
-//        }
-//        
-//        // now that the max is found, insert it and update the g-index corresponding
-//        // to the f-monomial that was used to calculate this max
-//        monom_t maxDegree = maxDescription[0];
-//        monom_t maxCoef = maxDescription[1];
-//        
-//        insert(heap, maxDegree, maxCoef, mergedDirectly);
-//        multiplicationsDone++;      // increment the number of multiplications done
-//        
-//        // update f-monomial properties
-//        monom_t pair_number = maxDescription[2];
-//        monom_t f_monom_index = maxDescription[3];
-//        monom_t g_monom_index = maxDescription[4];
-//        
-//        g_monom_index++;
-//        
-//        // check if there are any more g-monomials corresponding to the current f-monomial
-//        if (g_monom_index == g_polynomials[pair_number]->size()) {
-//            g_i_s[pair_number][f_monom_index] = -1;
-//        }
-//        else {
-//            g_i_s[pair_number][f_monom_index] = (int) g_monom_index;
-//        }
-//        
-//        // reset the description back to default values
-//        maxDescription[0] = 0;
-//        
-//        
-//        // if the element was merged directly in I, then we don't count it
-//        if (mergedDirectly) {
-//            i--;    
-//        }        
-//    }
-//    
-//    
-//    // STATE: Up till now, the heap contains the S elements which are larger
-//    //        than all the remaining elements.
-//    
-//    // STEP 3: Extraction/Insertion of the remaining elements into the heap
-//    
-//    // We now need perform the rest of the mutliplication process. At every iteration,
-//    // we extract the max element from the heap and place it in the result, and we
-//    // insert the max element from the remaining 'untouched' elements into the heap.
-//    
-//    // allocate a place for the result
-//    poly_t* result = new poly_t;
-//    
-//    
-//    monom_t maxElement = 0;
-//        
-//    // loop until we have done all monomial multiplications
-//    while (multiplicationsDone < maxMultiplications) {
-//        
-//        // extract the maximum element from the heap and place it in the result
-//        // Note: if in the last inserted element was merged in I, then we don't
-//        // extract an element now to maintain the size of the heap
-//        
-//        if (!mergedDirectly) {
-//            maxElement = poll(heap);
-//            result->push_back(maxElement);
-//        }
-//        
-//        
-//        // now insert a new (max) element into the heap
-//        // find the max element from all pairs
-//        for (size_t pair_index = 0; pair_index < f_polynomials.size(); pair_index++) {
-//            // get a new (possible) max
-//            getMaxFromPair(pair_index, g_i_s[pair_index], tempDescription, f_polynomials, g_polynomials);
-//            
-//            // now compare with previously found max, and make adjustments if necessary
-//            if (tempDescription[0] >= maxDescription[0]) {
-//                
-//                // copy values of tempDescription to maxDescription
-//                maxDescription[0] = tempDescription[0];
-//                maxDescription[1] = tempDescription[1];
-//                maxDescription[2] = tempDescription[2];
-//                maxDescription[3] = tempDescription[3];
-//                maxDescription[4] = tempDescription[4];
-//            }
-//        }
-//        
-//        // now that the max is found, insert it and update the g-index corresponding
-//        // to the f-monomial that was used to calculate this max
-//        monom_t maxDegree = maxDescription[0];
-//        monom_t maxCoef = maxDescription[1];
-//        
-//        insert(heap, maxDegree, maxCoef, mergedDirectly);
-//        multiplicationsDone++;      // increment the number of multiplications done
-//        
-//        // update f-monomial properties
-//        monom_t pair_number = maxDescription[2];
-//        monom_t f_monom_index = maxDescription[3];
-//        monom_t g_monom_index = maxDescription[4];
-//        
-//        g_monom_index++;
-//        
-//        // check if there are any more g-monomials corresponding to the current f-monomial
-//        if (g_monom_index == g_polynomials[pair_number]->size()) {
-//            g_i_s[pair_number][f_monom_index] = -1;
-//        }
-//        else {
-//            g_i_s[pair_number][f_monom_index] = (int) g_monom_index;
-//        }
-//
-//        // reset description back to default values
-//        maxDescription[0] = 0;
-//    }
-//
-//    // STATE: All elements have been inserted into the heap, and many have been
-//    //        extracted and placed in the result
-//    
-//    // STEP 4: Extract all remaining elements from the heap and place them into 
-//    //         the result
-//        
-//    while (!isEmpty(heap)) {
-//        result->push_back(poll(heap));
-//        
-//        multiplicationsDone++;
-//    }
-//    
-//    return result;
-//}
-
-
-
-
-
-
-
-
-
-void printPolynomial(const poly_t &p) {
-    for (size_t i = 0; i < p.size(); i++) {
-        
-        if (i != 0) {
-            printf(" + ");
-        }
-        
-
-        if (GET_COEF(p[i]) != 0) {
-            printf("%llu", GET_COEF(p[i]));
-        }
-        
-        if (GET_DEGREE(p[i]) > 0) {
-            printf("*x");
-        }
-        
-        if (GET_DEGREE(p[i]) > 1) {
-            printf("^%llu", GET_DEGREE(p[i]));
-        }
-    }
-    
-    printf("\n");
-}
-
-
-void toString(const poly_t &p, string &output) {
-		
-    stringstream ss (stringstream::in | stringstream::out);
-        
-    output = "";
-    
-    for (size_t i = 0; i < p.size(); i++) {
-        
-        if (i != 0) {
-            ss << " + ";
-        }
-        
-        
-        if (GET_COEF(p[i]) != 0) {
-            ss << GET_COEF(p[i]);
-        }
-        
-        if (GET_DEGREE(p[i]) > 0) {
-            ss << "*x";
-        }
-        
-        if (GET_DEGREE(p[i]) > 1) {
-            ss << "^"  << GET_DEGREE(p[i]);
-        }
-    }
-    
-    output = ss.str();
-}
-
-
+#ifdef COMPILE_MERGING
 // multiply multiple pairs
 void multiplyMultiplePairsFunnelWithMerging(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
 	/*
@@ -1348,11 +778,20 @@ void multiplyMultiplePairsFunnelWithMerging(std::vector<poly_t> &f_polynomials, 
 	
 }
 
+#endif
 
 
-
-// multiplying pairs while maintaining ID's outside the heap (ie no packing ID's in monomials)
-void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
+/*
+ *	Computes the summation of the products of polynomial pairs. This version does not pack ID's
+ *	into each monomial, but rather manages ID's in an external data structure. This data structure
+ *	is slightly more complex than when ID's are packed, but it does allow for optimized versions
+ *	of the data structures.
+ *
+ *	@param f_polynomials the set of f polynomials
+ *	@param g_polynomials the set of g polynomials
+ *	@param result the variable that will hold the result
+ */
+void sopUnpackedIDs(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
 	/*
 	 * General Code Sketch:
 	 *
@@ -1496,7 +935,6 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 
 	// create an array of vectors that would hold a mapping of a monomial inserted
 	// into the heap to the actual f and g monomials whose product is that monomial
-//stack<unsigned long> ID_Monom_pair [largestDegree];
 	vector<unsigned long> ID_Monom_pair [largestDegree+1];
 	
 
@@ -1615,18 +1053,14 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 		// from what monomial products it resulted.		
 		
 		// first get the number of ids that correspond to this max
-//		stack<unsigned long> relation = ID_Monom_pair[maxDegree];
 		vector<unsigned long> *relation = &ID_Monom_pair[maxDegree];
 		size_t numOfIds = relation->size();
 		
 		// CONTINUE Timer: finished accessing ID-monomial relationship table
 		continueTimer();
 				
-		// second, for each of the id's, insert the next monomial multiplication
-		// that should occur by consulting the table defining the relation between
-		// ID's and monomial multiplications
-		for (size_t id_counter = 0; id_counter < numOfIds; id_counter++) {
-			if (verboseLevel(VERBOSE_HIGH)) cout << "ID " << id_counter << "/" << numOfIds << endl;
+		// second, extract all the monomials of that degree and add them to the result
+		while (!A->isEmpty() && maxDegree == GET_DEGREE(A->peek())) {
 			// extract the max element from the heap, and insert its successor
 			max = A->poll();
 			
@@ -1636,15 +1070,15 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 			
 			if (verboseLevel(VERBOSE_HIGH)) 
 				cout << "SIZE=" << A->size() << "\tExtracted: coef=" << maxCoef << ", deg=" << maxDegree << endl;
-			
+		}
+		
+		// now insert the successor for each of the pairs that generated monomials of having maxDegree
+		for (size_t id_counter = 0; id_counter < numOfIds; id_counter++) {
 			
 			// PAUSE Timer: to access ID-monomial relationship table
 			pauseTimer();
 
 			// get one of the ids corresponding to this relation
-			// unsigned long currentMaxID = relation.top();
-			// relation.pop();
-
 			unsigned long currentMaxID = relation->back();
 			relation->pop_back();
 			
@@ -1673,47 +1107,34 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 				poly_t f = f_polynomials[maxRow];
 				poly_t g = g_polynomials[maxRow];
 
-				//			int g_successor = recTable[maxRow][maxCol];
-				int g_successor = maxRef->g_counter;
-
 	            f_element = f[maxCol];
-	            g_element = g[g_successor];
+	            g_element = g[maxRef->g_counter];
 
 	            //coef_t coef = GET_COEF(f_element) * GET_COEF(g_element);
 	            deg_t degree = GET_DEGREE(f_element) + GET_DEGREE(g_element);
 
-//				if (coef % p != 0) {
-					if (verboseLevel(VERBOSE_HIGH)) 
-						cout << "SIZE=" << A->size() << "\tInserting: coef=" << 1 << ", deg=" << degree << endl;
-						
-					A->insert (degree, 1);
 
+				if (verboseLevel(VERBOSE_HIGH)) 
+					cout << "SIZE=" << A->size() << "\tInserting: coef=" << 1 << ", deg=" << degree << endl;
 					
-					// record the id-monomial relationship
-					// stack<unsigned long> rel = ID_Monom_pair[degree];
-					// rel.push(currentMaxID);
-					
-					// PAUSE Timer: to access ID-monomial relationship table
-					pauseTimer();
+				A->insert (degree, 1);
 
-					vector<unsigned long> *rel = &ID_Monom_pair[degree];
-					rel->push_back(currentMaxID);
-					
-					// CONTINUE Timer: finished accessing ID-monomial relationship table
-					continueTimer();
-					
-//				}			
+				
+				// record the id-monomial relationship				
+				pauseTimer(); 				// PAUSE Timer: to access ID-monomial relationship table
+
+				vector<unsigned long> *rel = &ID_Monom_pair[degree];
+				rel->push_back(currentMaxID);
+				
+				continueTimer();	// CONTINUE Timer: finished accessing ID-monomial relationship table
+				
+		
 				currentMultiplications++;
 			}
 			
 		}
+		
 
-		// if (maxCoef % p == 0) {
-		//             continue;
-		//         }
-        
-        	
-//        setCoef(max, maxCoef % p);
 		setCoef(max, maxCoef);
 		if (verboseLevel(VERBOSE_HIGH)) cout << "Add to result: " << GET_DEGREE(max) << endl;
         result.push_back(max);
@@ -1723,6 +1144,7 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 	if (verboseLevel(VERBOSE_LOW)) cout << "Done with second set of insertions" << endl << endl;
 	
 	if (verboseLevel(VERBOSE_LOW)) cout << "Extracting all remaining elements from heap" << endl;
+
 	// extract all remaining elements from heap
 	while (!A->isEmpty()) {
 		monom_t max = A->poll();
@@ -1730,19 +1152,10 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 		coef_t maxCoef = GET_COEF(max);
 		deg_t maxDegree = GET_DEGREE(max);
 		
-		while (GET_DEGREE(A->peek()) == maxDegree) {
+		while (!A->isEmpty() && (GET_DEGREE(A->peek()) == maxDegree)) {
 			maxCoef += GET_COEF(A->poll());
-			
-			if (A->isEmpty()) 
-				break;
 		}
 		
-        
-        // if (maxCoef % p == 0) {
-        //     continue;
-        // }
-        
-//        setCoef(max, maxCoef % p);
 		setCoef(max, maxCoef);
         result.push_back(max);
 	}
@@ -1755,25 +1168,34 @@ void multiplyMultiplePairsNoID(std::vector<poly_t> &f_polynomials, std::vector<p
 
 
 
-// call procedure depending on the heap chosen
+/*
+ *	The "controller" method that decides which "summation of products" procedure should be used,
+ *	based on some set options.
+ *
+ *	@param f_polynomials the set of f polynomials
+ *	@param g_polynomials the set of g polynomials
+ *	@param result the variable that will hold the result
+ */
 void summationOfProducts (std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
 	
 	
 	if (usingOptimizedSequenceOfInserts()) {
-		OSImultiply(f_polynomials, g_polynomials, result);
+		sopOSI(f_polynomials, g_polynomials, result);
 	}
 	else {		// if using non-optimized sequence of inserts
 		if (chosenHeap() == FUNNEL_HEAP_WITH_MERGING) {
-			multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);
+			//multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);
+			sopUnpackedIDs(f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == BINARY_HEAP) {
-			multiplyMultiplePairsNoID(f_polynomials, g_polynomials, result);
+			sopUnpackedIDs(f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == FUNNEL_HEAP) {
-			multiplyMultiplePairsNoID(f_polynomials, g_polynomials, result);
+			sopUnpackedIDs(f_polynomials, g_polynomials, result);
 		}
 		else if (chosenHeap() == BINARY_HEAP_WITH_CHAINING) {
-			multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);
+			//multiplyMultiplePairsFunnelWithMerging (f_polynomials, g_polynomials, result);
+			sopUnpackedIDs(f_polynomials, g_polynomials, result);
 		}
 	}
 }
@@ -1905,7 +1327,7 @@ void bhWithChainingPreprocessing (std::vector<poly_t> &f_polynomials, std::vecto
 
 
 // multiply using an optimized sequence of inserts
-void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
+void sopOSI(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_polynomials, poly_t &result) {
 	if (verboseLevel(VERBOSE_LOW)) 
 		cout << "Procedure: Multiple Polynomial Pairs Multiplication using Optimized Sequence of Inserts" << endl;
 		
@@ -1992,7 +1414,8 @@ void OSImultiply(std::vector<poly_t> &f_polynomials, std::vector<poly_t> &g_poly
 	 *		needed to identify the source of the successor that needs to be inserted
 	 *	- Counters are used to preserve the 'state' of every polynomial pair in terms of where
 	 *		it had last reached in its multiplication process. Two counters will be assigned
-	 *		to each pair (one for the f polynomial, and the other for the g). 
+	 *		to each pair (one for the f polynomial, and the other for the g). In simpler terms,
+	 *		the counters will be used to identify the successor of the extracted monomial product. 
 	 *		
 	 * How it all works:
 	 *	Once a monomial is extracted, identify the polynomial pair from which it was calculated

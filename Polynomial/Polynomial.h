@@ -27,4 +27,25 @@ using namespace std;
 typedef vector<monom_t> poly_t; 	/**< \typedef definition of polynomial type */
 
 
+/*
+ *  Converts the polynomial representation to a string of the form:
+ *      a*x^n + b*x^(n-1) + ... + c*x^0  (where a != 0)
+ *
+ *  @param p: the polynomial 
+ *  @param output: string representation of the polynomial p
+ */
+void polyToString(const poly_t &p, string &output);
+
+
+void printPolynomial(const poly_t &p);
+
+
+/*
+ * Returns the degree of the polynomial
+ *
+ * @param P: the polynomial.
+ */
+deg_t deg(const poly_t &p);
+
+
 #endif

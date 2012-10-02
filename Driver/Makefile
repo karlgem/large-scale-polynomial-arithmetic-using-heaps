@@ -1,7 +1,7 @@
 # This makefile builds a generic tester for all heaps
 
 
-all: main
+all: pal
 # path to stxxl.mk file
 # from your stxxl installation
 include  $(HOME)/stxxl/trunk/stxxl.mk
@@ -10,6 +10,9 @@ include  $(HOME)/stxxl/trunk/stxxl.mk
 CXX              = $(STXXL_CXX)
 CPPFLAGS        += $(STXXL_CPPFLAGS)
 LDLIBS          += $(STXXL_LDLIBS)
+
+# use non-stxxl compilation variables
+# CXX				   = g++
 
 # add your own optimization, warning, debug, ... flags
 # (these are *not* set in stxxl.mk)
@@ -27,9 +30,13 @@ POLY			 = ../Polynomial
 
 PA				 = ../PolynomialArithmetic
 
+PG				 = ../PolynomialGenerator
+
+IO				 = ../IOHandling
+
 # build your application
 # (my_example.o is generated from my_example.cpp automatically)
-main: Options.o Buffer.o Link.o KMerger.o FunnelHeap.o FunnelHeapWithMerging.o BinaryHeap.o BinaryHeapWithChaining.o PolynomialArithmetic.o main.o 
+pal: Options.o Polynomial.o IOHandling.o PolynomialGenerator.o Buffer.o Link.o KMerger.o FunnelHeap.o FunnelHeapWithMerging.o BinaryHeap.o BinaryHeapWithChaining.o PolynomialArithmetic.o main.o 
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 main.o: main.cpp $(PA)/PolynomialArithmetic.h
@@ -37,6 +44,15 @@ main.o: main.cpp $(PA)/PolynomialArithmetic.h
 
 Options.o: ../Options/Options.h ../Options/Options.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c ../Options/Options.cpp
+
+IOHandling.o: $(IO)/IOHandling.h $(IO)/IOHandling.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(IO)/IOHandling.cpp
+
+Polynomial.o: $(POLY)/Polynomial.h $(POLY)/Polynomial.cpp $(POLY)/Monomial.h
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(POLY)/Polynomial.cpp
+
+PolynomialGenerator.o: $(PG)/PolynomialGenerator.h $(PG)/PolynomialGenerator.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(PG)/PolynomialGenerator.cpp
 
 BinaryHeap.o: $(BH)/BinaryHeap.cpp $(BH)/BinaryHeap.h $(POLY)/Polynomial.h
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(BH)/BinaryHeap.cpp
@@ -46,7 +62,8 @@ BinaryHeapWithChaining.o: $(BHC)/BinaryHeapWithChaining.cpp $(BHC)/BinaryHeapWit
 
 PolynomialArithmetic.o: $(PA)/PolynomialArithmetic.cpp $(PA)/PolynomialArithmetic.h $(POLY)/Polynomial.h
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(PA)/PolynomialArithmetic.cpp
-		
+
+
 # Funnel heaps
 
 Buffer.o: $(FHC)/Buffer.cpp $(FHC)/Buffer.h $(POLY)/Monomial.h
@@ -66,7 +83,10 @@ FunnelHeapWithMerging.o: $(FHM)/FunnelHeapWithMerging.cpp $(FHM)/FunnelHeapWithM
 
 
 
+main_no_stxxl: ../Options/NO_STXXL.h main
 
-clean:
-	rm -f *.o main
+clean: clean_dSYM
+	rm -f *.o stxxl.errlog stxxl.log pal
 
+clean_dSYM:
+	rm -f -r main.dSYM

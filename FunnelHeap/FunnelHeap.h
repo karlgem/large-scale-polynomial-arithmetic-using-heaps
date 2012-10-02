@@ -29,6 +29,9 @@
 #include "../Polynomial/Monomial.h"
 #include "../Options/Options.h"
 
+#include <queue>
+
+using namespace std;
 
 typedef queue<monom_t> stream_t;
 
