@@ -11,30 +11,34 @@
 #include <ctime>
 #include <cstdlib>
 
+#include "PolynomialGenerator.h"
+#include "../Options/Options.h"
 using namespace std;
 
-void usage();
+/***** Function Prototypes *****/
+
+// void readArgs (int argc, char *argv[]);
+// void usage();
 void generateSinglePolynomial (int degree, string &polyString);
-void generatePolynomials ();
 int computeNumberOfPairsNeeded1(size_t maxSizeOfQueue);
+
 
 // specify default values
 const int DEFAULT_NUMBER_OF_PAIRS = 10;
-const string DEFAULT_OUTPUT_FILE_NAME = "output.out";
+// const string DEFAULT_OUTPUT_FILE_NAME = "output.out";
 const float DEFAULT_SPARSITY = 0.5;
-
 
 // global variables
 int numOfPairs = DEFAULT_NUMBER_OF_PAIRS;
-string outputFilename = DEFAULT_OUTPUT_FILE_NAME;
+// string outputFilename = DEFAULT_OUTPUT_FILE_NAME;
 float sparsity = DEFAULT_SPARSITY;
 
 
-// enable the 'verbose' boolean in order to print the progress of the generator
-bool verbose = false;
-
 // sets the highest possible value for a coefficient
 const int COEF_LIMIT = 5;
+
+
+/***** Function Implementations *****/
 
 void printVector (std::vector<int> &v) {
     for (size_t i = 0; i < v.size(); i++) {
@@ -45,57 +49,22 @@ void printVector (std::vector<int> &v) {
 }
 
 
-/*
- *      This file generates a file containing two sets of polynomials, f and g, to be 
- *      used as a test case for the polynomial multiplications procedure.
- *
- *      The user can customize the test case using a set of parameters (see usage()).           
- */
 
-int main (int argc, char *argv []) {
-    
-    
-    /* READ PARAMETERS */
-    
-    // read any input parameters that the user has given
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-o") == 0) {               // output file name
-            outputFilename = argv[++i];
-        }
-        else if (strcmp(argv[i], "-n") == 0) {  // number of pairs
-            numOfPairs = atoi(argv[++i]);
-        }
-        else if (strcmp(argv[i], "-v") == 0) {  // enable verbose feature
-            verbose = true;
-        }
-        else if (strcmp(argv[i], "-s") == 0) {  // set sparsity
-            sparsity = atof(argv[++i]);
-        }
-	else if (strcmp(argv[i], "-help") == 0) {	// print usage
-		usage();
-	}
-    }
-    
-    // if maxQueueSize is found, override the number of pairs
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-qs") == 0) {      // maximum queue size we want (with error)
-            int qs = atoi(argv[++i]);
-            
-            cout << "qs = " << qs << endl;
-            // get the number of pairs from this queue size
-            numOfPairs = computeNumberOfPairsNeeded1 (qs);
-        }
-    }
-    
-    
-    // GENERATE POLYNOMIALS WITH GIVEN PARAMETERS
-    generatePolynomials ();
-}
+// int main (int argc, char *argv []) {
+//     
+// 	readArgs(argc, argv);
+// 	
+//     generatePolynomials ();
+// }
+// 
 
-void generatePolynomials () {
+void generatePolynomials (unsigned int n, double s, const string filename) {
+	numOfPairs = n;
+	sparsity = s;
+	
     // set the output stream
     ofstream outputFile;
-    outputFile.open (outputFilename.c_str(), ios::out);
+    outputFile.open (filename.c_str(), ios::out);
     
     // write the number of pairs to the output file
     outputFile << numOfPairs << endl;
@@ -105,9 +74,10 @@ void generatePolynomials () {
     int progress = 0;
     int control = (int) (rate * numOfPairs);                // show progress after every 'control' prints
     
-    if (verbose) {
+    if (verboseLevel(VERBOSE_LOW)) {
         cout << "Generating f polynomials..." << endl;
     }
+
     string poly;
     // generate the f polynomials   
     for (int i = numOfPairs-1; i >= 0; i--) {
@@ -119,7 +89,7 @@ void generatePolynomials () {
         outputFile << "f_" << i << " = " << poly.c_str() << endl;
         
         // print progress
-        if (verbose) {
+        if (verboseLevel(VERBOSE_LOW)) {
             if (i % control == 0 && i > 0) {
                 progress += rate * 100;
                 cout << "\t" << progress << "\% Done" << endl;
@@ -127,7 +97,7 @@ void generatePolynomials () {
         }
     }
     
-    if (verbose) {
+    if (verboseLevel(VERBOSE_LOW)) {
         cout << "Generating g polynomials..." << endl;
     }
     
@@ -142,7 +112,7 @@ void generatePolynomials () {
         outputFile << "g_" << i << " = " << poly.c_str() << endl;
         
         // print progress
-        if (verbose) {
+        if (verboseLevel(VERBOSE_LOW)) {
             if (i % control == 0 && i > 0) {
                 progress += rate * 100;
                 cout << "\t" << progress << "\% Done" << endl;
@@ -241,66 +211,66 @@ void generateSinglePolynomial (int degree, string &polyString) {
  *		- The last polynomial has sparsity S and 1 monomial
  *		
  */
-void generateSparsePolynomials (float sparsity, size_t numberOfPairs) {
-	// set the output stream
-    ofstream outputFile;
-    outputFile.open (outputFilename.c_str(), ios::out);
-
-    // write the number of pairs to the output file
-    outputFile << numberOfPairs << endl;
-
-    // some processing to figure out when to print a 'progress signal'
-    float rate = 0.1;
-    int progress = 0;
-    int control = (int) (rate * numOfPairs);                // show progress after every 'control' prints
-
-    if (verbose) {
-        cout << "Generating f polynomials..." << endl;
-    }
-    string poly;
-    // generate the f polynomials   
-    for (int i = numOfPairs-1; i >= 0; i--) {
-        // get the polynomial of degree i
-        generateSinglePolynomial(i, poly);
-
-
-        // print to output file
-        outputFile << "f_" << i << " = " << poly.c_str() << endl;
-
-        // print progress
-        if (verbose) {
-            if (i % control == 0 && i > 0) {
-                progress += rate * 100;
-                cout << "\t" << progress << "\% Done" << endl;
-            }
-        }
-    }
-
-    if (verbose) {
-        cout << "Generating g polynomials..." << endl;
-    }
-
-    progress = 0;
-
-    // generate the g polynomials
-    for (int i = numOfPairs-1; i >= 0; i--) {
-        // get the polynomial of degree i
-        generateSinglePolynomial(i, poly);
-
-        // print to output file
-        outputFile << "g_" << i << " = " << poly.c_str() << endl;
-
-        // print progress
-        if (verbose) {
-            if (i % control == 0 && i > 0) {
-                progress += rate * 100;
-                cout << "\t" << progress << "\% Done" << endl;
-            }
-        }
-    }
-
-    outputFile.close();
-}
+// void generateSparsePolynomials (float sparsity, size_t numberOfPairs) {
+// 	// set the output stream
+//     ofstream outputFile;
+//     outputFile.open (outputFilename.c_str(), ios::out);
+// 
+//     // write the number of pairs to the output file
+//     outputFile << numberOfPairs << endl;
+// 
+//     // some processing to figure out when to print a 'progress signal'
+//     float rate = 0.1;
+//     int progress = 0;
+//     int control = (int) (rate * numOfPairs);                // show progress after every 'control' prints
+// 
+//     if (verboseLevel(VERBOSE_LOW)) {
+//         cout << "Generating f polynomials..." << endl;
+//     }
+//     string poly;
+//     // generate the f polynomials   
+//     for (int i = numOfPairs-1; i >= 0; i--) {
+//         // get the polynomial of degree i
+//         generateSinglePolynomial(i, poly);
+// 
+// 
+//         // print to output file
+//         outputFile << "f_" << i << " = " << poly.c_str() << endl;
+// 
+//         // print progress
+//         if (verboseLevel(VERBOSE_LOW)) {
+//             if (i % control == 0 && i > 0) {
+//                 progress += rate * 100;
+//                 cout << "\t" << progress << "\% Done" << endl;
+//             }
+//         }
+//     }
+// 
+//     if (verboseLevel(VERBOSE_LOW)) {
+//         cout << "Generating g polynomials..." << endl;
+//     }
+// 
+//     progress = 0;
+// 
+//     // generate the g polynomials
+//     for (int i = numOfPairs-1; i >= 0; i--) {
+//         // get the polynomial of degree i
+//         generateSinglePolynomial(i, poly);
+// 
+//         // print to output file
+//         outputFile << "g_" << i << " = " << poly.c_str() << endl;
+// 
+//         // print progress
+//         if (verboseLevel(VERBOSE_LOW)) {
+//             if (i % control == 0 && i > 0) {
+//                 progress += rate * 100;
+//                 cout << "\t" << progress << "\% Done" << endl;
+//             }
+//         }
+//     }
+// 
+//     outputFile.close();
+// }
 
 
 
@@ -352,17 +322,54 @@ int computeNumberOfPairsNeeded1(size_t maxSizeOfQueue) {
     return numberOfPairs - 1;                       // -1   FOR NOW
 }
 
-// print usage message (to standard error)
-void usage () {
-    cerr << "usage: Polynomial Generator" << endl <<endl;
-    
-    cerr << "generator  -o (output_name) -n (num) -s (num)" << endl;
-    cerr << "Where: -o (output_name) = name of output file (default = \"" << DEFAULT_OUTPUT_FILE_NAME.c_str() << "\")" << endl;
-    cerr << "       -n (num) = number of pairs (default = " << DEFAULT_NUMBER_OF_PAIRS << ")" << endl;
-    cerr << "       -s (num) = sparsity of polynomials, 0 <= s <= 1 (default = " << DEFAULT_SPARSITY << ")" << endl;
-    
-    cerr << endl;
-    
-    // quit program
-    exit(0);
-}
+
+// 
+// void readArgs (int argc, char *argv[]) {
+// 	if (argc == 1)
+// 		usage();
+//     
+//     // read any input parameters that the user has given
+//     for (int i = 1; i < argc; i++) {
+//         if (strcmp(argv[i], "-o") == 0) {               // output file name
+//             outputFilename = argv[++i];
+//         }
+//         else if (strcmp(argv[i], "-n") == 0) {  // number of pairs
+//             numOfPairs = atoi(argv[++i]);
+//         }
+//         else if (strcmp(argv[i], "-v") == 0) {  // enable verboseLevel(VERBOSE_LOW) feature
+//             verboseLevel(VERBOSE_LOW) = true;
+//         }
+//         else if (strcmp(argv[i], "-s") == 0) {  // set sparsity
+//             sparsity = atof(argv[++i]);
+//         }
+// 		else if (strcmp(argv[i], "-help") == 0) {	// print usage
+// 			usage();
+// 		}
+//     }
+// 
+// 	// if maxQueueSize is found, override the number of pairs
+// 	for (int i = 1; i < argc; i++) {
+// 		if (strcmp(argv[i], "-qs") == 0) {      // maximum queue size we want (with error)
+// 			int qs = atoi(argv[++i]);
+// 
+// 			// get the number of pairs from this queue size
+// 			numOfPairs = computeNumberOfPairsNeeded1 (qs);
+// 		}
+// 	}
+// }
+// 
+// 
+// // print usage message (to standard error)
+// void usage () {
+//     cerr << "usage: Polynomial Generator" << endl <<endl;
+//     
+//     cerr << "generator  -o (output_name) -n (num) -s (num)" << endl;
+//     cerr << "Where: -o (output_name) = name of output file (default = \"" << DEFAULT_OUTPUT_FILE_NAME.c_str() << "\")" << endl;
+//     cerr << "       -n (num) = number of pairs (default = " << DEFAULT_NUMBER_OF_PAIRS << ")" << endl;
+//     cerr << "       -s (num) = sparsity of polynomials, 0 <= s <= 1 (default = " << DEFAULT_SPARSITY << ")" << endl;
+//     
+//     cerr << endl;
+//     
+//     // quit program
+//     exit(0);
+// }
