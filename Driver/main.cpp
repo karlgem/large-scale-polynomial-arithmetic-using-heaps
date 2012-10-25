@@ -60,10 +60,10 @@ int main (int argc, char * argv[]) {
 		stopTimer();
     
 	
-		cout << "result size = " << result.size() << endl;
+		if (verboseLevel(VERBOSE_LOW)) cout << "result size = " << result.size() << endl;
 
 		// compute elapsed time
-		cout << "Time = " << getElapsedTime() << endl;   
+		if (verboseLevel(VERBOSE_LOW)) cout << "Time = " << getElapsedTime() << endl;   
 
 		// open a file to write the execution time to
 		ofstream timesFile;
@@ -91,7 +91,7 @@ int main (int argc, char * argv[]) {
 			mult_output.close();
 		}
 	
-		// cout << *(stxxl::stats::get_instance());
+		if (verboseLevel(VERBOSE_LOW)) cout << *(stxxl::stats::get_instance());
 	}
 	else if (type_gen) {
 		string outputFilename;
@@ -185,11 +185,11 @@ void readArgs(int argc, char *argv[]) {
 		}
 		
 		// arguments for the generator type
-        else if (strcmp(argv[i], "-n") == 0) {  // number of pairs
+        else if (strcasecmp(argv[i], "-n") == 0) {  // number of pairs
             GEN_numOfPairs = atoi(argv[++i]);
 			choseNumberOfPairs = true;
         }
-        else if (strcmp(argv[i], "-s") == 0) {  // set sparsity
+        else if (strcasecmp(argv[i], "-s") == 0) {  // set sparsity
             GEN_sparsity = atof(argv[++i]);
         }
 

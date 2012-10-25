@@ -26,39 +26,41 @@ echo 'SOP on 100 pairs with OSI'
 ./pal -t sop -h funnel-merging -i TEMP_TESTS/t_100p_s_0.in -o TEMP_TESTS/o_100p_s_0_fhm_osi.out -osi
 
 
-# n=500, s=0
-echo 'SOP on 500 pairs'
-./pal -t sop -h binary -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bh.out
-./pal -t sop -h binary-chaining -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bhc.out
-./pal -t sop -h funnel -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fh.out
-./pal -t sop -h funnel-merging -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fhm.out
+# # n=500, s=0
+# echo 'SOP on 500 pairs'
+# ./pal -t sop -h binary -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bh.out
+# ./pal -t sop -h binary-chaining -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bhc.out
+# ./pal -t sop -h funnel -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fh.out
+# ./pal -t sop -h funnel-merging -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fhm.out
+# 
+# 
+# echo 'SOP on 500 pairs with OSI'
+# ./pal -t sop -h binary -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bh_osi.out -osi
+# ./pal -t sop -h binary-chaining -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bhc_osi.out -osi
+# ./pal -t sop -h funnel -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fh_osi.out -osi
+# ./pal -t sop -h funnel-merging -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fhm_osi.out -osi
 
 
-echo 'SOP on 500 pairs with OSI'
-./pal -t sop -h binary -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bh_osi.out -osi
-./pal -t sop -h binary-chaining -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_bhc_osi.out -osi
-./pal -t sop -h funnel -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fh_osi.out -osi
-./pal -t sop -h funnel-merging -i TEMP_TESTS/t_500p_s_0.in -o TEMP_TESTS/o_500p_s_0_fhm_osi.out -osi
 
-
-
-# n=1000, s=40%
-echo 'SOP on 1000 pairs'
-./pal -t sop -h binary -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bh.out
-./pal -t sop -h binary-chaining -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bhc.out
-./pal -t sop -h funnel -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fh.out
-./pal -t sop -h funnel-merging -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fhm.out
-
-
-echo 'SOP on 1000 pairs with OSI'
-./pal -t sop -h binary -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bh_osi.out -osi
-./pal -t sop -h binary-chaining -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bhc_osi.out -osi
-./pal -t sop -h funnel -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fh_osi.out -osi
-./pal -t sop -h funnel-merging -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fhm_osi.out -osi
+# # n=1000, s=40%
+# echo 'SOP on 1000 pairs'
+# ./pal -t sop -h binary -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bh.out
+# ./pal -t sop -h binary-chaining -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bhc.out
+# ./pal -t sop -h funnel -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fh.out
+# ./pal -t sop -h funnel-merging -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fhm.out
+# 
+# 
+# echo 'SOP on 1000 pairs with OSI'
+# ./pal -t sop -h binary -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bh_osi.out -osi
+# ./pal -t sop -h binary-chaining -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_bhc_osi.out -osi
+# ./pal -t sop -h funnel -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fh_osi.out -osi
+# ./pal -t sop -h funnel-merging -i TEMP_TESTS/t_1000p_s_40.in -o TEMP_TESTS/o_1000p_s_40_fhm_osi.out -osi
 
 
 
 # Check result (REVISE CHECKING METHOD FOR CLEANER OUTPUT)
+
+cd TEMP_TESTS
 
 # n=100, s=0
 echo 'CHECK n=100, s=0'
@@ -72,25 +74,26 @@ diff o_100p_s_0_bh.out o_100p_s_0_fh_osi.out
 diff o_100p_s_0_bh.out o_100p_s_0_fhm_osi.out
 
 
-echo 'CHECK n=500, s=0'
-diff o_500p_s_0_bh.out o_500p_s_0_bh.out
-diff o_500p_s_0_bh.out o_500p_s_0_bhc.out 
-diff o_500p_s_0_bh.out o_500p_s_0_fh.out
-diff o_500p_s_0_bh.out o_500p_s_0_fhm.out
-diff o_500p_s_0_bh.out o_500p_s_0_bh_osi.out
-diff o_500p_s_0_bh.out o_500p_s_0_bhc_osi.out
-diff o_500p_s_0_bh.out o_500p_s_0_fh_osi.out
-diff o_500p_s_0_bh.out o_500p_s_0_fhm_osi.out
+# echo 'CHECK n=500, s=0'
+# diff o_500p_s_0_bh.out o_500p_s_0_bh.out
+# diff o_500p_s_0_bh.out o_500p_s_0_bhc.out 
+# diff o_500p_s_0_bh.out o_500p_s_0_fh.out
+# diff o_500p_s_0_bh.out o_500p_s_0_fhm.out
+# diff o_500p_s_0_bh.out o_500p_s_0_bh_osi.out
+# diff o_500p_s_0_bh.out o_500p_s_0_bhc_osi.out
+# diff o_500p_s_0_bh.out o_500p_s_0_fh_osi.out
+# diff o_500p_s_0_bh.out o_500p_s_0_fhm_osi.out
 
-echo 'CHECK n=1000, s=40%'
-diff o_1000p_s_40_bh.out o_1000p_s_40_bh.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_bhc.out 
-diff o_1000p_s_40_bh.out o_1000p_s_40_fh.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_fhm.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_bh_osi.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_bhc_osi.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_fh_osi.out
-diff o_1000p_s_40_bh.out o_1000p_s_40_fhm_osi.out
+# echo 'CHECK n=1000, s=40%'
+# diff o_1000p_s_40_bh.out o_1000p_s_40_bh.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_bhc.out 
+# diff o_1000p_s_40_bh.out o_1000p_s_40_fh.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_fhm.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_bh_osi.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_bhc_osi.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_fh_osi.out
+# diff o_1000p_s_40_bh.out o_1000p_s_40_fhm_osi.out
 
 
+cd ../
 rm -f -r TEMP_TESTS

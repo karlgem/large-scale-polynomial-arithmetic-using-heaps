@@ -86,7 +86,7 @@ FunnelHeapWithMerging.o: $(FHM)/FunnelHeapWithMerging.cpp $(FHM)/FunnelHeapWithM
 main_no_stxxl: ../Options/NO_STXXL.h main
 
 clean: clean_dSYM
-	rm -f *.o stxxl.errlog stxxl.log pal
+	rm -f *.o bhWithChainingInfo stxxl.errlog stxxl.log pal
 
 clean_dSYM:
 	rm -f -r main.dSYM

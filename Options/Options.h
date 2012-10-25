@@ -21,10 +21,10 @@
 
 
 // UNCOMMENT FOR STXXL (COMMENT THE SECOND TYPEDEF)
-// #include <stxxl.h>
-// typedef stxxl::VECTOR_GENERATOR<w_type, 1, 16*256, 4096>::result heap_t;
+#include <stxxl.h>
+typedef stxxl::VECTOR_GENERATOR<w_type, 1, 16*256, 4096>::result heap_t;
 
-typedef std::vector<w_type> heap_t;
+// typedef std::vector<w_type> heap_t;
 
 
 

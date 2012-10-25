@@ -43,8 +43,10 @@ BinaryHeapWithChaining::BinaryHeapWithChaining (heap_size_t n) {
 	heap_size_t spaceToReserve = n; 			// space for heap elements
 	spaceToReserve += calculateMemorySpaceForChaining();		// space for chaining elements and overhead
 	
-	cout << "Space to Reserve = " << spaceToReserve << endl;
-	cout << "Heap Capacity = " << heapCapacity << endl;
+	if (verboseLevel(VERBOSE_LOW)) {
+		cout << "Space to Reserve = " << spaceToReserve << endl;
+		cout << "Heap Capacity = " << heapCapacity << endl;
+	}
 
 
 	// reserve space in vector

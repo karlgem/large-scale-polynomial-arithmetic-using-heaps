@@ -96,15 +96,18 @@ public:
 		
 		// print and clear statistics
 		if (STAT_linkSweeps != NULL) {
-			unsigned long long totalNumberOfSweeps = 0;
-			cout << "Heap Statistics:" << endl;
-			for(int i = 1; i <= numOfLinks; i++) {
-				cout << "\tLink " << i << ": " << STAT_linkSweeps[i-1] << " sweeps" << endl;
-				totalNumberOfSweeps += STAT_linkSweeps[i-1];
-			}
 			
-			cout << "\tTotal Number of Sweeps = " << totalNumberOfSweeps << endl;
-			cout << endl;
+			if (verboseLevel(VERBOSE_LOW)) {
+				unsigned long long totalNumberOfSweeps = 0;
+				cout << "Heap Statistics:" << endl;
+				for(int i = 1; i <= numOfLinks; i++) {
+					cout << "\tLink " << i << ": " << STAT_linkSweeps[i-1] << " sweeps" << endl;
+					totalNumberOfSweeps += STAT_linkSweeps[i-1];
+				}
+			
+				cout << "\tTotal Number of Sweeps = " << totalNumberOfSweeps << endl;
+				cout << endl;
+			}
 			
 			delete STAT_linkSweeps;
 		}
